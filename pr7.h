@@ -21,6 +21,13 @@
 #ifdef _POSIX_C_SOURCE
 /* use the minimal value for maximal portability */
 
+extern char *prog;
+extern int v_flag;
+extern int i_flag;
+extern int e_flag;
+extern int d_flag;
+/* external global variables */
+
 #define MAX_LINE        _POSIX_MAX_INPUT
 #define MAX_PATH        _POSIX_PATH_MAX
 #define MAX_CHILDREN    _POSIX_CHILD_MAX
