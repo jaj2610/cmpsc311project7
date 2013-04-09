@@ -18,7 +18,7 @@
 #include <errno.h>
 #include <string.h>
 
-#include "cmpsc311.h"
+#include "wrapper.h"
 
 //------------------------------------------------------------------------------
 
