@@ -61,11 +61,11 @@ static void usage(int status)
 
 int main(int argc, char *argv[])
 {
-
   extern char *optarg;
   extern int optind;
   extern int optopt;
   extern int opterr;
+  prog = argv[0];
 
   /* set flags */
   while ((ch = getopt(argc, argv, ":hievdVs:")) != -1)
@@ -92,7 +92,15 @@ int main(int argc, char *argv[])
         d_flag = 1;
         break;
       case 's':
-        
+        s_flag++;
+        if (s_flag > 1)
+        {
+          fprintf(stderr, "%s: invalid option, only one file as input\n", prog);
+        }
+        else
+        {
+          s_filename = optarg;
+        }
         break;
       case '?':
         fprintf(stderr, "%s: invalid option '%c'\n", prog, optopt);
@@ -114,7 +122,7 @@ int main(int argc, char *argv[])
   while (1)
   {
     /* issue prompt and read command line */
-    printf("%s%% ", argv[0]);
+    printf("%s$ ", argv[0]);
     fgets(cmdline, MAX_LINE, stdin);   /* cmdline includes trailing newline */
     if (feof(stdin))                   /* end of file */
     { 
