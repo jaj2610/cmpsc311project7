@@ -20,8 +20,8 @@
 #define MAXARGS 128
 
 int eval_line(char *cmdline);                   /* evaluate a command line */
-int parse(char *buf, char *argv[]);             /* build the argv array */
-int builtin(char *argv[]);                      /* if builtin command, run it */
+int parse(char *buf, char *Argv[]);             /* build the Argv array */
+int builtin(char *Argv[]);                      /* if builtin command, run it */
 
 char *prog = "[no name]";
 int h_flag = 0;
@@ -138,17 +138,17 @@ int main(int argc, char *argv[])
 
 int eval_line(char *cmdline)
 {
-  char *argv[MAXARGS];  /* argv for execve() */
+  char *Argv[MAXARGS];  /* Argv for execve() */
   char buf[MAXLINE];    /* holds modified command line */
   pid_t pid;            /* process id */
 
   strcpy(buf, cmdline); /* buf[] will be modified by parse() */
 
-  int background = parse(buf, argv);
+  int background = parse(buf, Argv);
   int status = EXIT_SUCCESS;
 
   /* ignore empty lines */
-  if (argv[0] == NULL)          
+  if (Argv[0] == NULL)          
   { 
     return status;
   }
@@ -160,12 +160,12 @@ int eval_line(char *cmdline)
 
 /*----------------------------------------------------------------------------*/
 
-/* parse the command line and build the argv array
+/* parse the command line and build the Argv array
  *
  * Compare to parseline() in CS:APP Fig. 8.24.
  */
 
-int parse(char *buf, char *argv[])
+int parse(char *buf, char *Argv[])
 {
   char *delim;          /* points to first whitespace delimiter */
   int argc = 0;         /* number of args */
@@ -178,19 +178,19 @@ int parse(char *buf, char *argv[])
     buf++;
   }
 
-  /* build the argv list */
+  /* build the Argv list */
   while ((delim = strchr(buf, ' ')))
   {
-    argv[argc++] = buf;               /* start argv[i] */
-    *delim = '\0';                    /* terminate argv[i] */
-    buf = delim + 1;                  /* start argv[i+1]? */
+    Argv[argc++] = buf;               /* start Argv[i] */
+    *delim = '\0';                    /* terminate Argv[i] */
+    buf = delim + 1;                  /* start Argv[i+1]? */
 
     while (*buf && (*buf == ' '))
     {
       buf++;
     }
   }
-  argv[argc] = NULL;
+  Argv[argc] = NULL;
 
   if (argc == 0)                      /* blank line */
   { 
@@ -198,9 +198,9 @@ int parse(char *buf, char *argv[])
   }
 
   /* Should the job run in the background? */
-  if ((bg = (strcmp(argv[argc-1], "&") == 0)))
+  if ((bg = (strcmp(Argv[argc-1], "&") == 0)))
   {
-    argv[--argc] = NULL;
+    Argv[--argc] = NULL;
   }
 
   return bg;
@@ -213,57 +213,57 @@ int parse(char *buf, char *argv[])
  * Compare to builtin_command() in CS:APP Fig. 8.23.
  */
 
-int builtin(char *argv[], char *buf)
+int builtin(char *Argv[], char *buf)
 {
-  if (!strcmp(argv[0], "quit"))     /* quit command */
+  if (!strcmp(Argv[0], "quit"))     /* quit command */
   { 
     	Quit();
 		return 1;
   }
 
-  if (!strcmp(argv[0], "echo"))		/* echo command */
+  if (!strcmp(Argv[0], "echo"))		/* echo command */
   {
-  		Echo(argv);
+  		Echo(Argv);
 		return 1;
   }
 
-  if (!strcmp(argv[0], "dir"))		/* dir command */
+  if (!strcmp(Argv[0], "dir"))		/* dir command */
   {
 		Dir();
 		return 1;
   }
 
-  if (!strcmp(argv[0], "cdir"))		/* cdir command */
+  if (!strcmp(Argv[0], "cdir"))		/* cdir command */
   {
-		Cdir(argv);
+		Cdir(Argv);
 		return 1;
   }
 
-  if (!strcmp(argv[0], "penv"))		/* penv command */
+  if (!strcmp(Argv[0], "penv"))		/* penv command */
   {
-		Penv(argv);
+		Penv(Argv);
 		return 1;
   }
 
-  if (!strcmp(argv[0], "senv"))		/* penv command */
+  if (!strcmp(Argv[0], "senv"))		/* penv command */
   {
-		Senv(argv);
+		Senv(Argv);
 		return 1;
   }
 
-  if (!strcmp(argv[0], "unsenv"))		/* penv command */
+  if (!strcmp(Argv[0], "unsenv"))		/* penv command */
   {
-		Unsenv(argv);
+		Unsenv(Argv);
 		return 1;
   }
 
-  if (!strcmp(argv[0], "help"))		/* penv command */
+  if (!strcmp(Argv[0], "help"))		/* penv command */
   {
 		help();
 		return 1;
   }
 
-  if (!strcmp(argv[0], "&"))        /* ignore singleton & */
+  if (!strcmp(Argv[0], "&"))        /* ignore singleton & */
   {
     return 1;
   }
@@ -278,12 +278,12 @@ void Quit(void)
   exit(0);
 }
 
-void Echo(char *argv[])
+void Echo(char *Argv[])
 {
   int i = 1;
-  while(argv[i] != NULL)
+  while(Argv[i] != NULL)
   {
-    printf("%s ",argv[i]);
+    printf("%s ",Argv[i]);
     i++;
   }
   printf("\n");
@@ -294,22 +294,22 @@ void Dir(void)
   ;
 }
 
-void Cdir(char *argv[])
+void Cdir(char *Argv[])
 {
   ;
 }
 
-void Penv(char *argv[])
+void Penv(char *Argv[])
 {
   ;
 }
 
-void Senv(char *argv[])
+void Senv(char *Argv[])
 {
   ;
 }
 
-void Unsenv(char *argv[])
+void Unsenv(char *Argv[])
 {
 
 }
