@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <sys/types.h>
+#include <signal.h>
 
 //------------------------------------------------------------------------------
 
@@ -18,18 +19,7 @@
 //   safe_string(() -- guard against null pointer for character string output
 
 const char *safe_string(const char *str);
-
-//------------------------------------------------------------------------------
-
-// check function arguments
-//   verify() -- tf is expected to be true; if not, print msg and quit
-
-#define verify(tf, msg) cmpsc311_verify(tf, msg, __func__, __LINE__)
-
-void cmpsc311_verify(const bool tf,
-	const char *msg, const char *func, const int line);
-
-//------------------------------------------------------------------------------
+typedef void (*sighandler_t)(int);
 
 // Error-checking wrappers for some common functions
 //
@@ -45,7 +35,10 @@ FILE *Fopen(const char * restrict filename, const char * restrict mode,
 
 pid_t Fork(void);
 
+int Kill(pid_t pid, int sig);
+
+sighandler_t Signal(int signum, sighandler_t handler);
+
 //------------------------------------------------------------------------------
 
 #endif
-

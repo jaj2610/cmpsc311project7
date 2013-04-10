@@ -22,6 +22,14 @@
 int eval_line(char *cmdline);                   /* evaluate a command line */
 int parse(char *buf, char *Argv[]);             /* build the Argv array */
 int builtin(char *Argv[]);                      /* if builtin command, run it */
+void Quit(void);
+void Echo(char *Argv[]);
+void Dir(void);
+void Cdir(char *Argv[]);
+void Penv(char *Argv[]);
+void Senv(char *Argv[]);
+void Unsenv(char *Argv[]);
+void Help(void);
 
 char *prog = "[no name]";
 int h_flag = 0;
@@ -29,6 +37,8 @@ int i_flag = 0;
 int e_flag = 0;
 int v_flag = 0;
 int d_flag = 0;
+int s_flag = 0;
+char *s_filename = "[no name]";
 
 
 
@@ -65,6 +75,7 @@ int main(int argc, char *argv[])
   extern int optind;
   extern int optopt;
   extern int opterr;
+  int ch;
 
   prog = argv[0];
 
@@ -139,7 +150,7 @@ int main(int argc, char *argv[])
 int eval_line(char *cmdline)
 {
   char *Argv[MAXARGS];  /* Argv for execve() */
-  char buf[MAXLINE];    /* holds modified command line */
+  char buf[MAX_LINE];    /* holds modified command line */
   pid_t pid;            /* process id */
 
   strcpy(buf, cmdline); /* buf[] will be modified by parse() */
@@ -152,7 +163,7 @@ int eval_line(char *cmdline)
   { 
     return status;
   }
-  if (builtin)
+  if (builtin(Argv))
   {
     return status;
   }
@@ -171,9 +182,9 @@ int parse(char *buf, char *Argv[])
   int argc = 0;         /* number of args */
   int bg;               /* background job? */
 
-  buf[strlen(buf)-1] = ’ ’; /* Replace trailing ’\n’ with space */
+  buf[strlen(buf)-1] = ' '; /* Replace trailing ’\n’ with space */
 
-  while (*buf && (*buf == ’ ’)) /* Ignore leading spaces */
+  while (*buf && (*buf == ' ')) /* Ignore leading spaces */
   {
     buf++;
   }
@@ -213,17 +224,17 @@ int parse(char *buf, char *Argv[])
  * Compare to builtin_command() in CS:APP Fig. 8.23.
  */
 
-int builtin(char *Argv[], char *buf)
+int builtin(char *Argv[])
 {
   if (!strcmp(Argv[0], "quit"))     /* quit command */
   { 
-    	Quit();
+    Quit();
 		return 1;
   }
 
   if (!strcmp(Argv[0], "echo"))		/* echo command */
   {
-  		Echo(Argv);
+  	Echo(Argv);
 		return 1;
   }
 
@@ -311,10 +322,10 @@ void Senv(char *Argv[])
 
 void Unsenv(char *Argv[])
 {
-
+  ;
 }
 
 void Help(void)
 {
-
+  ;
 }

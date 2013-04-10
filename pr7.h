@@ -30,11 +30,9 @@ extern int i_flag;
 extern int e_flag;
 extern int v_flag;
 extern int d_flag;
-<<<<<<< HEAD
+extern int s_flag;
 extern char *s_filename;
 /* external global variables */
-=======
->>>>>>> 3cfc81c79e26fa721d3a9c44943c198988f8c958
 
 #define MAX_LINE        _POSIX_MAX_INPUT
 #define MAX_PATH        _POSIX_PATH_MAX
@@ -58,4 +56,3 @@ extern char *s_filename;
 /*----------------------------------------------------------------------------*/
 
 #endif
-

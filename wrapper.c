@@ -15,6 +15,8 @@
 #include <sys/types.h>
 
 #include "wrapper.h"
+#include "pr7.h"
+
 
 //------------------------------------------------------------------------------
 
@@ -93,11 +95,36 @@ pid_t Fork(void)
 	pid_t pid;
 
 	if ((pid = fork()) < 0) {
-		fprintf(stderr, "fork() failed: %s", strerror(errno));
+		fprintf(stderr, "fork() failed: %s\n", strerror(errno));
 	}
 
 	return pid;
 }
 
-//------------------------------------------------------------------------------
+int Kill(pid_t pid, int sig)
+{
+  int response;
+  response = kill(pid, sig);
+  if (response == -1)
+  {
+    fprintf(stderr, "kill() failed: %s\n", strerror(errno));
+  }
 
+  return response;
+}
+
+sighandler_t Signal(int signum, sighandler_t handler)
+{
+  sighandler_t response;
+
+  response = signal(signum, handler);;
+
+  if (response == SIG_ERR)
+  {
+    fprintf(stderr, "signal(%d, handler) failed: %s\n", signum, strerror(errno));
+  }
+
+  return response;
+}
+
+//------------------------------------------------------------------------------
