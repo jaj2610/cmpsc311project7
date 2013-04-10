@@ -22,9 +22,10 @@
 /* use the minimal value for maximal portability */
 
 extern char *prog;
-extern int v_flag;
+extern int h_flag;
 extern int i_flag;
 extern int e_flag;
+extern int v_flag;
 extern int d_flag;
 /* external global variables */
 
