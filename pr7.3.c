@@ -19,6 +19,9 @@
 
 #define MAXARGS 128
 
+void listOptions(void);
+int prompt(int argc, char *argv[], int status);
+void eval_options(int argc, char *argv[]);
 int eval_line(char *cmdline);                   /* evaluate a command line */
 int parse(char *buf, char *Argv[]);             /* build the Argv array */
 int builtin(char *Argv[]);                      /* if builtin command, run it */
@@ -32,13 +35,12 @@ void Unsenv(char *Argv[]);
 void Help(void);
 
 char *prog = "[no name]";
-int h_flag = 0;
 int i_flag = 0;
 int e_flag = 0;
 int v_flag = 0;
 int d_flag = 0;
 int s_flag = 0;
-char *s_filename = "[no name]";
+char *s_filename = "pr7.init";  // default startup file name
 
 
 
@@ -50,11 +52,11 @@ static void usage(int status)
   {
     printf("usage: %s [-h] [-e] [-v] [-d] [-V] [-s f]\n", prog);
     printf("  -h           print help\n");
-    printf("  -i           iteractive mode");
+    printf("  -i           iteractive mode\n");
     printf("  -e           echo commands before execution\n");
     printf("  -v           verbose mode; enable extra printing; can be repeated\n");
     printf("  -d           debug information for memory allocation\n");
-    printf("  -V           enables verbose and debug modes");
+    printf("  -V           enables verbose and debug modes\n");
     printf("  -s f         use startup file f, default is pr7.init\n");
   }
   else
@@ -67,18 +69,96 @@ static void usage(int status)
 
 /*----------------------------------------------------------------------------*/
 
+int main(int argc, char *argv[])
+{
+  prog = argv[0];
+
+  eval_options(argv, argc);
+
+  int status = EXIT_SUCCESS;
+
+  if (v_flag)
+  {
+    listOptions();
+  }
+
+  if (s_flag)
+  {
+    ; // do something with s_filename
+  }
+
+  if (i_flag)
+  {
+    status = prompt(argc, argv, status);
+  }
+
+  return status;
+}
+
 /*----------------------------------------------------------------------------*/
 
-int main(int argc, char *argv[])
+void listOptions(void)
+{
+  printf("Hello from pr7!\n");
+  printf("Options you have chosen:\n");
+
+  if (i_flag)
+  {
+    printf("-i: iteractive mode\n");
+  }
+
+  if (e_flag)
+  {
+    printf("-e: echo commands before execution\n");
+  }
+
+  if (v_flag)
+  {
+    printf("-v: verbose mode\n");
+  }
+
+  if (d_flag)
+  {
+    printf("-d: debug mode\n");
+  }
+
+  if (s_flag)
+  {
+    printf("-s: using startup file %s\n", s_filename);
+  }
+}
+
+/*----------------------------------------------------------------------------*/
+
+int prompt(int argc, char *argv[], int status)
+{
+  char cmdline[MAX_LINE];                /* command line */
+
+  while (1)
+  {
+    /* issue prompt and read command line */
+    printf("%s$ ", argv[0]);
+    fgets(cmdline, MAX_LINE, stdin);   /* cmdline includes trailing newline */
+    if (feof(stdin))                   /* end of file */
+    { 
+      break;
+    }
+
+    status = eval_line(cmdline);
+
+    return status;
+  }
+}
+
+/*----------------------------------------------------------------------------*/
+
+void eval_options(int argc, char *argv[])
 {
   extern char *optarg;
   extern int optind;
   extern int optopt;
   extern int opterr;
   int ch;
-
-  prog = argv[0];
-
   /* set flags */
   while ((ch = getopt(argc, argv, ":hievdVs:")) != -1)
   {
@@ -108,6 +188,7 @@ int main(int argc, char *argv[])
         if (s_flag > 1)
         {
           fprintf(stderr, "%s: invalid option, only one file as input\n", prog);
+          exit(1);
         }
         else
         {
@@ -125,24 +206,6 @@ int main(int argc, char *argv[])
         break;
     }
   }
-
-  int status = EXIT_SUCCESS;
-  char cmdline[MAX_LINE];                /* command line */
-
-  while (1)
-  {
-    /* issue prompt and read command line */
-    printf("%s$ ", argv[0]);
-    fgets(cmdline, MAX_LINE, stdin);   /* cmdline includes trailing newline */
-    if (feof(stdin))                   /* end of file */
-    { 
-      break; 
-    }
-
-    status = eval_line(cmdline);
-  }
-
-  return status;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -329,5 +392,13 @@ void Unsenv(char *Argv[])
 
 void Help(void)
 {
-  ;
+  printf("%s: Built in commands\n", prog);
+  printf("   help           print this list\n");
+  printf("   quit           terminate pr7 if no background processes are running\n");
+  printf("   echo           print remaining command-line arguments\n");
+  printf("   dir            print current working directory\n");
+  printf("   cdir           change working directory\n");
+  printf("   penv           print one or all environment variables\n");
+  printf("   senv           set an environment variable\n");
+  printf("   unsenv         unset an environment variables\n");
 }

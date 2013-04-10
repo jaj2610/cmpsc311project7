@@ -16,7 +16,6 @@
 
 /* external global variables */
 extern char *prog;
-extern int h_flag;
 extern int i_flag;
 extern int e_flag;
 extern int v_flag;
