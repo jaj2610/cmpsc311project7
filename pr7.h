@@ -15,7 +15,7 @@
 #include <limits.h>
 
 /* external global variables */
-extern char *prog;
+extern const char *prog;
 extern int i_flag;
 extern int e_flag;
 extern int v_flag;

@@ -2,6 +2,9 @@
  *
  * Author:   Jacob Jones
  * Email:    jaj5333@psu.edu
+ * 
+ * Author:	Scott Cheloha
+ * Email:	ssc5145@psu.edu
  *
  */
 
@@ -13,6 +16,7 @@
 #include <errno.h>
 #include <string.h>
 #include <sys/wait.h>
+#include <sys/param.h>
 
 #include "wrapper.h"
 #include "pr7.h"
@@ -33,8 +37,10 @@ void Penv(char *Argv[]);
 void Senv(char *Argv[]);
 void Unsenv(char *Argv[]);
 void Help(void);
+void shell_msg(const char* function_name, const char* msg);
 
-char *prog = "[no name]";
+
+const char *prog = "pr7";
 int i_flag = 0;
 int e_flag = 0;
 int v_flag = 0;
@@ -71,8 +77,6 @@ static void usage(int status)
 
 int main(int argc, char *argv[])
 {
-  prog = argv[0];
-
   eval_options(argc, argv);
 
   int status = EXIT_SUCCESS;
@@ -137,7 +141,7 @@ int prompt(int argc, char *argv[], int status)
   while (1)
   {
     /* issue prompt and read command line */
-    printf("%s$ ", argv[0]);
+    printf("%s$ ", prog);
     fgets(cmdline, MAX_LINE, stdin);   /* cmdline includes trailing newline */
     if (feof(stdin))                   /* end of file */
     { 
@@ -160,6 +164,7 @@ void eval_options(int argc, char *argv[])
   extern int optopt;
   extern int opterr;
   int ch;
+
   /* set flags */
   while ((ch = getopt(argc, argv, ":hievdVs:")) != -1)
   {
@@ -292,6 +297,9 @@ int parse(char *buf, char *Argv[])
 
 int builtin(char *Argv[])
 {
+	// reset errno
+	errno = 0;
+
   if (!strcmp(Argv[0], "quit"))     /* quit command */
   { 
     Quit();
@@ -345,7 +353,7 @@ int builtin(char *Argv[])
     return 1;
   }
 
-  return 0;                             /* not a builtin command */
+  return 0;                       /* not a builtin command */
 }
 
 /*----------------------------------------------------------------------------*/
@@ -357,23 +365,92 @@ void Quit(void)
 
 void Echo(char *Argv[])
 {
-  int i = 1;
-  while(Argv[i] != NULL)
-  {
-    printf("%s ",Argv[i]);
-    i++;
-  }
-  printf("\n");
+	for (int i = 1; Argv[i] != NULL; i++)
+	{
+		printf("%s ", Argv[i]);
+	}
+
+	puts("");
 }
 
 void Dir(void)
 {
-  ;
+	char *buf;
+
+	if (v_flag)
+	{
+		shell_msg("dir", "printing working directory");
+	}
+		
+
+	// Allocate MAXPATHLEN bytes for buf
+	if ((buf = Malloc(MAXPATHLEN, __func__, __LINE__)) == NULL) {
+		shell_msg("dir", strerror(errno));
+		return;
+	}
+
+	// Call getwd() 
+	getwd(buf);
+
+	// Check if getwd() failed,
+	// print a message on failure, print the directory name on success
+	if (errno != 0) {
+		shell_msg("dir", strerror(errno));	
+	}
+	else {
+		printf("%s\n", getwd(buf));
+	}
+
+	// free() buf and return
+	free(buf);
+	return;
 }
 
 void Cdir(char *Argv[])
 {
-  ;
+	const char *target_dir;
+
+	// If the directory is unspecified, use env. var. HOME as target directory
+	if (Argv[1] == NULL) {
+		target_dir = getenv("HOME");
+	}
+	// Otherwise, use the specified directory
+	else {
+		target_dir = Argv[1];
+	}
+
+	if (v_flag)
+	{
+		fprintf(stderr, "-%s: %s: changing working directory to %s\n",
+				prog, "cdir", target_dir);
+	}	
+
+	// Check that the directory is not NULL
+	if (target_dir)
+	{
+		// attempt to change the working directory to Argv[1]
+		if (chdir(target_dir) == -1) {
+			shell_msg("cdir", strerror(errno));
+			return;
+		}
+		
+		// attempt to set env. var. PWD to Argv[1]
+		if (setenv("PWD", target_dir, 1) == -1) {
+			shell_msg("cdir", strerror(errno));
+			return;
+		}
+
+		if (v_flag)
+		{
+			fprintf(stderr, "-%s: %s: working directory changed to %s\n",
+					prog, "cdir", target_dir);
+		}	
+	}
+	// Strange circumstance where Argv[1] NULL but not caught,
+	// or HOME is unspecified by the environment
+	else {
+		shell_msg("cdir", "strange error; HOME is not set");
+	}
 }
 
 void Penv(char *Argv[])
@@ -402,4 +479,14 @@ void Help(void)
   puts("  penv       print one or all environment variables");
   puts("  senv       set an environment variable");
   puts("  unsenv     unset an environment variables");
+}
+
+// Prints an error message
+// format is:
+// 	-[program name]: [command name]: [msg1]: [msg2]
+//
+// Warning: shell_error WILL FAIL if function_name and/or msg1 are NULL
+void shell_msg(const char* function_name, const char* msg)
+{
+	fprintf(stderr, "-%s: %s: %s\n", prog, function_name, msg);
 }
