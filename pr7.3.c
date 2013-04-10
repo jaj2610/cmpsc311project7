@@ -167,6 +167,8 @@ int eval_line(char *cmdline)
   {
     return status;
   }
+
+  return status;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -270,7 +272,7 @@ int builtin(char *Argv[])
 
   if (!strcmp(Argv[0], "help"))		/* penv command */
   {
-		help();
+		Help();
 		return 1;
   }
 

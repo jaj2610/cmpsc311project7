@@ -14,15 +14,6 @@
 
 #include <limits.h>
 
-/*
- *  MAX_LINE            input line length
- *  MAX_PATH            directory name length
- *  MAX_CHILDREN        number of child processes
- */
-
-/* use the minimal value for maximal portability */
-#ifdef _POSIX_C_SOURCE
-
 /* external global variables */
 extern char *prog;
 extern int h_flag;
@@ -32,7 +23,17 @@ extern int v_flag;
 extern int d_flag;
 extern int s_flag;
 extern char *s_filename;
-/* external global variables */
+
+/*
+ *  MAX_LINE            input line length
+ *  MAX_PATH            directory name length
+ *  MAX_CHILDREN        number of child processes
+ */
+
+/* use the minimal value for maximal portability */
+#ifdef _POSIX_C_SOURCE
+
+
 
 #define MAX_LINE        _POSIX_MAX_INPUT
 #define MAX_PATH        _POSIX_PATH_MAX
