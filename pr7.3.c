@@ -52,7 +52,7 @@ static void usage(int status)
   {
     printf("usage: %s [-h] [-e] [-v] [-d] [-V] [-s f]\n", prog);
     printf("  -h           print help\n");
-    printf("  -i           iteractive mode\n");
+    printf("  -i           interactive mode\n");
     printf("  -e           echo commands before execution\n");
     printf("  -v           verbose mode; enable extra printing; can be repeated\n");
     printf("  -d           debug information for memory allocation\n");
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 {
   prog = argv[0];
 
-  eval_options(argv, argc);
+  eval_options(argc, argv);
 
   int status = EXIT_SUCCESS;
 
@@ -99,32 +99,32 @@ int main(int argc, char *argv[])
 
 void listOptions(void)
 {
-  printf("Hello from pr7!\n");
-  printf("Options you have chosen:\n");
+  printf("hello from pr7!\n");
+  printf("options chosen:\n");
 
   if (i_flag)
   {
-    printf("-i: iteractive mode\n");
+    puts("   -i: interactive mode");
   }
 
   if (e_flag)
   {
-    printf("-e: echo commands before execution\n");
+    puts("   -e: echo commands before execution");
   }
 
   if (v_flag)
   {
-    printf("-v: verbose mode\n");
+    puts("   -v: verbose mode");
   }
 
   if (d_flag)
   {
-    printf("-d: debug mode\n");
+    puts("   -d: debug mode");
   }
 
   if (s_flag)
   {
-    printf("-s: using startup file %s\n", s_filename);
+    printf("   -s: using startup file %s\n", s_filename);
   }
 }
 
@@ -146,8 +146,9 @@ int prompt(int argc, char *argv[], int status)
 
     status = eval_line(cmdline);
 
-    return status;
   }
+
+  return status;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -187,7 +188,7 @@ void eval_options(int argc, char *argv[])
         s_flag++;
         if (s_flag > 1)
         {
-          fprintf(stderr, "%s: invalid option, only one file as input\n", prog);
+          fprintf(stderr, "%s: invalid option; only one startup file allowed\n", prog);
           exit(1);
         }
         else
@@ -392,13 +393,13 @@ void Unsenv(char *Argv[])
 
 void Help(void)
 {
-  printf("%s: Built in commands\n", prog);
-  printf("   help           print this list\n");
-  printf("   quit           terminate pr7 if no background processes are running\n");
-  printf("   echo           print remaining command-line arguments\n");
-  printf("   dir            print current working directory\n");
-  printf("   cdir           change working directory\n");
-  printf("   penv           print one or all environment variables\n");
-  printf("   senv           set an environment variable\n");
-  printf("   unsenv         unset an environment variables\n");
+  puts("built-in commands:");
+  puts("  help       print this list");
+  puts("  quit       terminate pr7 if no background processes are running");
+  puts("  echo       print remaining command-line arguments");
+  puts("  dir        print current working directory");
+  puts("  cdir       change working directory");
+  puts("  penv       print one or all environment variables");
+  puts("  senv       set an environment variable");
+  puts("  unsenv     unset an environment variables");
 }
