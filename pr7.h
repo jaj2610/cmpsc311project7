@@ -1,3 +1,5 @@
+
+
 #ifndef PR7_H
 #define PR7_H
 
@@ -18,24 +20,28 @@
  *  MAX_CHILDREN        number of child processes
  */
 
-#ifdef _POSIX_C_SOURCE
 /* use the minimal value for maximal portability */
+#ifdef _POSIX_C_SOURCE
 
+/* external global variables */
 extern char *prog;
 extern int h_flag;
 extern int i_flag;
 extern int e_flag;
 extern int v_flag;
 extern int d_flag;
+<<<<<<< HEAD
 extern char *s_filename;
 /* external global variables */
+=======
+>>>>>>> 3cfc81c79e26fa721d3a9c44943c198988f8c958
 
 #define MAX_LINE        _POSIX_MAX_INPUT
 #define MAX_PATH        _POSIX_PATH_MAX
 #define MAX_CHILDREN    _POSIX_CHILD_MAX
 
-#else
-/* use the default value for this system */
+
+#else /* use the default value for this system */
 
 #define MAX_LINE        MAX_INPUT
 #define MAX_PATH        PATH_MAX
