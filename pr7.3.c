@@ -65,6 +65,7 @@ int main(int argc, char *argv[])
   extern int optind;
   extern int optopt;
   extern int opterr;
+
   prog = argv[0];
 
   /* set flags */
@@ -108,8 +109,6 @@ int main(int argc, char *argv[])
         break;
       case ':':
         fprintf(stderr, "%s: invalid option '%c' (missing argument)\n", prog, optopt);
-        usage(EXIT_FAILURE);
-        break;
       default:
         usage(EXIT_FAILURE);
         break;
@@ -210,11 +209,54 @@ int parse(char *buf, char *argv[])
  * Compare to builtin_command() in CS:APP Fig. 8.23.
  */
 
-int builtin(char *argv[])
+int builtin(char *argv[], char *buf)
 {
-  if (!strcmp(argv[0], "exit"))     /* exit command */
+  if (!strcmp(argv[0], "quit"))     /* quit command */
   { 
-    exit(0);
+    	Quit();
+		return 1;
+  }
+
+  if (!strcmp(argv[0], "echo"))		/* echo command */
+  {
+  		Echo(argv);
+		return 1;
+  }
+
+  if (!strcmp(argv[0], "dir"))		/* dir command */
+  {
+		Dir();
+		return 1;
+  }
+
+  if (!strcmp(argv[0], "cdir"))		/* cdir command */
+  {
+		Cdir(argv);
+		return 1;
+  }
+
+  if (!strcmp(argv[0], "penv"))		/* penv command */
+  {
+		Penv(argv);
+		return 1;
+  }
+
+  if (!strcmp(argv[0], "senv"))		/* penv command */
+  {
+		Senv(argv);
+		return 1;
+  }
+
+  if (!strcmp(argv[0], "unsenv"))		/* penv command */
+  {
+		Unsenv(argv);
+		return 1;
+  }
+
+  if (!strcmp(argv[0], "help"))		/* penv command */
+  {
+		help();
+		return 1;
   }
 
   if (!strcmp(argv[0], "&"))        /* ignore singleton & */
