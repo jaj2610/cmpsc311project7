@@ -153,6 +153,10 @@ int eval_line(char *cmdline)
   { 
     return status;
   }
+  if (builtin)
+  {
+    return status;
+  }
 }
 
 /*----------------------------------------------------------------------------*/
@@ -226,3 +230,49 @@ int builtin(char *argv[])
 }
 
 /*----------------------------------------------------------------------------*/
+
+void Quit(void)
+{
+  exit(0);
+}
+
+void Echo(char *argv[])
+{
+  int i = 1;
+  while(argv[i] != NULL)
+  {
+    printf("%s ",argv[i]);
+    i++;
+  }
+  printf("\n");
+}
+
+void Dir(void)
+{
+  ;
+}
+
+void Cdir(char *argv[])
+{
+  ;
+}
+
+void Penv(char *argv[])
+{
+  ;
+}
+
+void Senv(char *argv[])
+{
+  ;
+}
+
+void Unsenv(char *argv[])
+{
+
+}
+
+void Help(void)
+{
+
+}

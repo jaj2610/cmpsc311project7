@@ -27,6 +27,7 @@ extern int i_flag;
 extern int e_flag;
 extern int v_flag;
 extern int d_flag;
+extern char *s_filename;
 /* external global variables */
 
 #define MAX_LINE        _POSIX_MAX_INPUT
