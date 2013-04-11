@@ -36,7 +36,7 @@ void Senv(char *Argv[]);
 void Unsenv(char *Argv[]);
 
 /* Pjobs() Prints the current background processes, held by list */
-void Pjobs(const struct process_list * const list);
+void Pjobs(void);
 
 /* Help() prints the various builtin commands implemented in pr7
  */

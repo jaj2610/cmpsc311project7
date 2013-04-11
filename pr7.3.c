@@ -31,13 +31,15 @@ int v_flag = 0;
 int d_flag = 0;
 int s_flag = 0;
 char *s_filename = "pr7.init";  // default startup file name
-
+struct process_list *bg_processes;
 
 /*----------------------------------------------------------------------------*/
 
 int main(int argc, char *argv[])
 {
   eval_options(argc, argv);
+
+  bg_processes = process_list_allocate();
 
   int status = EXIT_SUCCESS;
 

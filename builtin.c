@@ -80,6 +80,11 @@ int Builtin(char *Argv[])
 		Help(); return 1;
 	}
 
+	/* pjobs command */
+	if (!strcmp(Argv[0], "pjobs")) {
+		Pjobs(); return 1;
+	}
+
 	/* ignore singleton & */
 	if (!strcmp(Argv[0], "&")) {
 		return 1;
@@ -335,10 +340,10 @@ void Help(void)
   puts("  penv       print one or all environment variables");
   puts("  senv       set an environment variable");
   puts("  unsenv     unset an environment variables");
+  puts("  pjobs      list background processes");
 }
 
-void Pjobs(const struct process_list * const list)
+void Pjobs(void)
 {
-	printf("Background Processes:\n");
-	process_list_print(list);
+	process_list_print(bg_processes);
 }

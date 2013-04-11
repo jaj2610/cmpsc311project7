@@ -23,6 +23,7 @@ extern int v_flag;
 extern int d_flag;
 extern int s_flag;
 extern char *s_filename;
+extern struct process_list *bg_processes;
 
 extern char **environ;
 
