@@ -1,12 +1,10 @@
 /* CMPSC 311, Spring 2013, Project 7
- *
- * Author:		Jake Jones
- * Email:		jaj5333@psu.edu
- *
- * Author:		Scott Cheloha
- * Email:		ssc5145@psu.edu
- *
- * originally by: Don Heller
+ * 
+ * Author: Jacob Jones
+ * Email: jaj5333@psu.edu
+ * 
+ * Author: Scott Cheloha
+ * Email: ssc5145@psu.edu
  */
 
 #include <stdio.h>

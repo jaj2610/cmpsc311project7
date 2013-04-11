@@ -98,3 +98,21 @@ void process_list_append(struct process_list * const list, const char *command, 
       list->tail = p;
     }
 }
+
+//------------------------------------------------------------------------------
+
+struct process_list *process_list_pop(struct process_list * const list, pid_t pid)
+{
+  struct node *prev = NULL;
+
+  for (struct node *p = list->head; p != NULL; p = p->next)
+  {
+    if (p->pid == pid)
+    {
+      prev->next = p->next;
+    }
+      free(prev); // free(NULL) is harmless
+      free(p->command);
+      prev = p;
+  }
+}

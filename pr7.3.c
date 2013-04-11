@@ -1,11 +1,10 @@
-/* CMPSC 311 Project 7 version 3
- *
- * Author:   Jacob Jones
- * Email:    jaj5333@psu.edu
+/* CMPSC 311, Spring 2013, Project 7
  * 
- * Author:	Scott Cheloha
- * Email:	ssc5145@psu.edu
- *
+ * Author: Jacob Jones
+ * Email: jaj5333@psu.edu
+ * 
+ * Author: Scott Cheloha
+ * Email: ssc5145@psu.edu
  */
 
 /*----------------------------------------------------------------------------*/
@@ -41,6 +40,8 @@ struct process_list *bg_processes;
 int main(int argc, char *argv[])
 {
   eval_options(argc, argv);
+
+  // install signal handlers
 
   int status = EXIT_SUCCESS;
 

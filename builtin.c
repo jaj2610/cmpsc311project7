@@ -1,27 +1,28 @@
-/*
- * Author:		Scott Cheloha
- * Email:		ssc5145@psu.edu
- *
- * Author:		Jake Jones
- * Email:		jaj5333@psu.edu
+/* CMPSC 311, Spring 2013, Project 7
+ * 
+ * Author: Jacob Jones
+ * Email: jaj5333@psu.edu
+ * 
+ * Author: Scott Cheloha
+ * Email: ssc5145@psu.edu
  */
 
 /* Implementation of the "built-in" shell commands as specified
  * in requirement (1) of the Project 7 specs.
  *
  * Here, we implement:
- * 	quit -- exit the shell (originally called "exit"
- * 		--NOTE: we need to fully implement this
- * 	echo
- * 	dir
- * 	cdir
- * 	penv -- needs writing
- * 	senv -- needs writing
- * 	unsenv -- needs writing
- *  pjobs
- * 	help
- * 	limits -- print the limit macros from pr7.h
- * 	toggle -- toggle verbosity, echo, debug modes from within the shell
+ * 	quit -- exit the shell, unless bg processes are active (originally called "exit")
+ * 	echo -- print remaining command-line arguments
+ * 	dir  -- print name of current working directory
+ * 	cdir -- change working directory
+ * 	penv -- print one or all environment variables
+ * 	senv -- set an environment variable
+ * 	unsenv -- unset an environment variable
+ *  pjobs  -- list currently active bg processes
+ * 	help   -- list special commands
+ *
+ * 	limits -- needs to be written, print the limit macros from pr7.h
+ * 	toggle -- needs to be written, toggle verbosity, echo, debug modes from within the shell
  */
 
 #include <stdio.h>
@@ -97,7 +98,15 @@ int Builtin(char *Argv[])
 
 void Quit(void)
 {
-  exit(0);
+	if (bg_processes->head != NULL)
+	{
+		puts("Background processes are still running.")
+		Pjobs();
+	}
+	else
+	{
+		exit(0);
+	}
 }
 
 /*----------------------------------------------------------------------------*/
