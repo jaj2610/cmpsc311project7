@@ -13,6 +13,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include <limits.h>
+#include <sys/param.h>
 
 /* external global variables */
 extern const char *prog;

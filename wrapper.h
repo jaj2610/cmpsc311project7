@@ -36,6 +36,8 @@ char *Strdup(const char *s,
 FILE *Fopen(const char * restrict filename, const char * restrict mode,
 	const char *func, const int line);
 
+int Fclose(FILE *stream, const char *func, const int line);
+
 pid_t Fork(void);
 
 int Kill(pid_t pid, int sig);
@@ -44,4 +46,4 @@ sighandler_t Signal(int signum, sighandler_t handler);
 
 //------------------------------------------------------------------------------
 
-#endif
+#endif /* WRAPPER_H */
