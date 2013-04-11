@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 
   if (i_flag)
   {
-    status = prompt(argc, argv, status);
+    status = prompt(status);
   }
 
   return status;
@@ -119,7 +119,7 @@ void list_options(void)
 
 /*----------------------------------------------------------------------------*/
 
-int prompt(int argc, char *argv[], int status)
+int prompt(int status)
 {
   char cmdline[MAX_LINE];                /* command line */
 

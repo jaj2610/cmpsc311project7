@@ -30,7 +30,7 @@ extern char **environ;
 
 /* Prototypes for functions in pr7.3.c */
 void list_options(void);
-int prompt(int argc, char *argv[], int status);
+int prompt(int status);
 void eval_options(int argc, char *argv[]);
 int eval_line(char *cmdline);                   /* evaluate a command line */
 int parse(char *buf, char *Argv[]);             /* build the Argv array */

@@ -227,22 +227,13 @@ void Senv(char *Argv[])
 		return;
 	}
 
-	// Duplicate the string in Argv[1] for modification
-	char *buf;
-	if ((buf = Strdup(Argv[1], __func__, __LINE__)) == NULL)
-	{
-		shell_msg("senv", strerror(errno));
-		free(buf);
-		return;
-	}
 	
 	// If no '=' is found, the command does not conform to formatting specs,
 	// so issue a message, free buf, and return to prompt
 	char *index_of_equal;
-	if ((index_of_equal = strpbrk(buf, "=")) == NULL)
+	if ((index_of_equal = strpbrk(Argv[1], "=")) == NULL)
 	{
 		shell_msg("senv", "format is 'senv name=value'");
-		free(buf);
 		return;
 	}
 
@@ -250,16 +241,15 @@ void Senv(char *Argv[])
 	// If we fail, free buf and return to prompt
 	
 	char *name;
-	int namelength = index_of_equal - buf;
+	int namelength = index_of_equal - Argv[1];
 	if ((name = Malloc(namelength + 1, __func__, __LINE__)) == NULL)
 	{
 		shell_msg("senv", strerror(errno));
-		free(buf);
 		return;
 	}
 
 	// Copy from buf to name
-	strncpy(name, buf, namelength);
+	strncpy(name, Argv[1], namelength);
 	name[namelength+1] = '\0';
 
 
@@ -267,16 +257,16 @@ void Senv(char *Argv[])
 	// If we fail, free buf, free name, and return to prompt
 
 	char *value;
-	int valuelength = strlen(buf) - namelength;
+	int valuelength = strlen(Argv[1]) - namelength;
 	if ((value = Malloc(valuelength, __func__, __LINE__)) == NULL)
 	{
 		shell_msg("senv", strerror(errno));
-		free(buf); free(name);
+		free(name);
 		return;
 	}
 
 	// Copy from buf to value
-	strncpy(value, buf+namelength+1, valuelength-1);
+	strncpy(value, Argv[1]+namelength+1, valuelength-1);
 	value[valuelength] = '\0';
 
 
@@ -292,7 +282,6 @@ void Senv(char *Argv[])
 	if ((setenv(name, value, 1) == -1))
 	{
 		shell_msg("senv", strerror(errno));
-		free(buf);
 		free(name);
 		free(value);
 	}
@@ -305,19 +294,50 @@ void Senv(char *Argv[])
 
 
 	// Free allocations and return to shell
-	free(buf);
 	free(name);
 	free(value);
 	return;
-
-	
 }
 
 /*----------------------------------------------------------------------------*/
 
 void Unsenv(char *Argv[])
 {
-  ;
+	// If Argv[1] is NULL, we do nothing
+	if (Argv[1] == NULL)
+	{
+		return;
+	}
+
+	// Ensure variable exists before attempting to unset
+	if (getenv(Argv[1]) == NULL)
+	{
+		fprintf(stderr, "-%s: %s: cannot unset %s; variable does not exist\n",
+				prog, "unsenv", Argv[1]);
+		return;
+	}
+
+	// Let the verbose user know what we're doing
+	if (v_flag)
+	{
+		fprintf(stderr, "-%s: unsenv: removing environment variable %s\n",
+				prog, Argv[1]);
+	}
+
+	// Attempt to unset the specified environment variable
+	if (unsetenv(Argv[1]) == -1)
+	{
+		shell_msg("unsenv", strerror(errno));
+		return;
+	}
+
+	if (v_flag)
+	{
+		fprintf(stderr, "-%s: unsenv: successfully removed environment variable %s\n",
+				prog, Argv[1]);
+	}
+
+	return;
 }
 
 /*----------------------------------------------------------------------------*/
