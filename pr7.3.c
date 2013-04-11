@@ -20,6 +20,7 @@
 #include "pr7.h"
 #include "wrapper.h"
 #include "builtin.h"
+#include "linked.h"
 
 #define MAXARGS 128
 

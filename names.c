@@ -14,8 +14,8 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "cmpsc311.h"
-#include "names.h"
+#include "wrapper.h"
+#include "linked.h"
 
 //------------------------------------------------------------------------------
 
