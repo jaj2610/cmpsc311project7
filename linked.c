@@ -19,6 +19,8 @@
 #include "linked.h"
 #include "pr7.h"
 
+
+
 //------------------------------------------------------------------------------
 
 struct process_list *process_list_allocate(void)
@@ -63,12 +65,12 @@ void process_list_deallocate(struct process_list * const list)
 
 void process_list_print(const struct process_list * const list)
 {
-  puts("PID   PGID   Status   Command\n");
-
   if (list->head == NULL)
-    { puts("  none"); }
+    { ; }
   else
     {
+      puts("Process:");
+      puts("PID   PGID   Status   Command\n");
       for (struct node *p = list->head; p != NULL; p = p->next)
 	{ printf("  [%d]   [%d]   [%s]   %s\n", p->pid, p->pgid, p->status, p->command);; }
     }
