@@ -1,25 +1,33 @@
-/*
- * Author:		Scott Cheloha
- * Email:		ssc5145@psu.edu
- *
- * Author:		Jake Jones
- * Email:		jaj5333@psu.edu
+/* CMPSC 311, Spring 2013, Project 7
+ * 
+ * Author: Jacob Jones
+ * Email: jaj5333@psu.edu
+ * 
+ * Author: Scott Cheloha
+ * Email: ssc5145@psu.edu
  */
 
 /* Implementation of the "built-in" shell commands as specified
  * in requirement (1) of the Project 7 specs.
  *
- * Here, we implement:
- * 	quit -- exit the shell (originally called "exit"
- * 		--NOTE: we need to fully implement this
- * 	echo
- * 	dir
- * 	cdir
- * 	penv -- needs writing
- * 	senv -- needs writing
- * 	unsenv -- needs writing
- * 	help
- * 	limits -- print the limit macros from pr7.h
+ * Per requirements of project 7, we implement:
+=======
+ * 	quit -- exit the shell, unless bg processes are active (originally called "exit")
+ *    echo -- print remaining command-line arguments
+ *    dir  -- print name of current working directory
+ *    cdir -- change working directory
+ *    penv -- print one or all environment variables
+ *    senv -- set an environment variable
+ *    unsenv -- unset an environment variable
+ *    pjobs  -- list currently active bg processes
+ * 	help   -- list builtin shell commands (commands implemented in builtin.c)
+ *
+ * In addition, we implement:
+ * 	limits -- needs to be written, print the limit macros from pr7.h
+ *    (set echo -- toggle echo mode on or off) -- replaced by toggle
+ * 	(set debug -- toggle debug mode on or off) -- replaced by toggle
+ *    set exec -- toggle exec types (lp,vp,ve)
+ *    (set verbose -- toggle verbose mode on or off) -- replaced by toggle
  * 	toggle -- toggle verbosity, echo, debug modes from within the shell
  */
 
@@ -31,8 +39,9 @@
 #include <sys/param.h>
 
 #include "builtin.h"
-#include "pr7.h" // included for shell_msg()
+#include "pr7.h"              // included for shell_msg()
 #include "wrapper.h"
+#include "linked.h"
 
 int Builtin(char *Argv[])
 {
@@ -78,19 +87,53 @@ int Builtin(char *Argv[])
 		Help(); return 1;
 	}
 
-	/* ignore singleton & */
+	/* pjobs command */
+	if (!strcmp(Argv[0], "pjobs")) {
+		Pjobs(); return 1;
+	}
+
+	/* toggle command */
+	if (!strcmp(Argv[0], "toggle")) {
+		Toggle(Argv); return 1;
+	}
+
+	/* options command */
+	if (!strcmp(Argv[0], "options")) {
+		Options(); return 1;
+	}
+
+	/* set command -- remove? */
+	if (!strcmp(Argv[0], "set")) {
+		Set(Argv); return 1;
+	}
+
+	/* ignore singleton & -- why is this here, Don? */
 	if (!strcmp(Argv[0], "&")) {
 		return 1;
 	}
 
-  return 0;                       /* not a builtin command */
+	/* not a builtin command */
+	return 0;
 }
 
 /*----------------------------------------------------------------------------*/
 
 void Quit(void)
 {
-  exit(0);
+	if (bg_processes->head != NULL)
+	{
+		puts("Background processes are still running.");
+		Pjobs();
+	}
+	else
+	{
+		if (v_flag)
+		{
+			printf("-%s: See you later, %s!\n", prog, getenv("USER"));
+		}
+
+		exit(0);
+	}
 }
 
 /*----------------------------------------------------------------------------*/
@@ -353,5 +396,245 @@ void Help(void)
   puts("  penv       print one or all environment variables");
   puts("  senv       set an environment variable");
   puts("  unsenv     unset an environment variables");
+  puts("  toggle     toggle a command line argument (e, v, or d)");
+  puts("  options    prints all active command line arguments (e, i, v, d, and s)");
 }
 
+void Pjobs(void)
+{
+	process_list_print(bg_processes);
+}
+
+/*----------------------------------------------------------------------------*/
+
+void Toggle(char *Argv[])
+{
+	// If Argv[1] is null, nothing was specified,
+	// so we issue a message and return to prompt
+	if (Argv[1] == NULL)
+	{
+		fprintf(stderr, "-%s: error: nothing to toggle\n", prog);
+		return;
+	}
+
+	if (!strcmp(Argv[1], "e"))
+	{
+		if (e_flag)
+		{
+			e_flag--;
+		}
+		else
+		{
+			e_flag++;
+		}
+
+		printf("-%s: echo mode is now ", prog);
+		if (e_flag)
+		{
+			puts("ON");
+		}
+		else
+		{
+			puts("OFF");
+		}
+
+		return;
+	}
+
+	if (!strcmp(Argv[1], "v"))
+	{
+		if (v_flag)
+		{
+			v_flag--;
+		}
+		else
+		{
+			v_flag++;
+		}
+
+		printf("-%s: verbose output is now ", prog);
+		if (v_flag)
+		{
+			puts("ON");
+		}
+		else
+		{
+			puts("OFF");
+		}
+
+		return;
+	}
+
+	if (!strcmp(Argv[1], "d"))
+	{
+		if (d_flag)
+		{
+			d_flag--;
+		}
+		else
+		{
+			d_flag++;
+		}
+
+		printf("-%s: debug output is now ", prog);
+		if (d_flag)
+		{
+			puts("ON");
+		}
+		else
+		{
+			puts("OFF");
+		}
+
+		return;
+	}
+
+	fprintf(stderr, "-%s: error: don't know how to toggle %s\n", prog, Argv[1]);
+}
+
+void Options(void)
+{
+	printf("-%s: Running with:\n", prog);
+	Print_Options();
+}
+
+void Print_Options()
+{
+  if (i_flag)
+  {
+    puts("   [-i] interactive prompt");
+  }
+
+  if (e_flag)
+  {
+    puts("   [-e] echo commands before execution");
+  }
+
+  if (v_flag)
+  {
+    puts("   [-v] verbose output");
+  }
+
+  if (d_flag)
+  {
+    puts("   [-d] debug output");
+  }
+
+  if (s_flag)
+  {
+    printf("   [-s]  startup file %s\n", s_filename);
+  }
+
+}
+
+/*----------------------------------------------------------------------------*/
+
+void Set(char *Argv[])
+{
+	if (!strcmp(Argv[1], "exec")) {
+		Sexec(Argv);
+		return;
+	}
+
+	fprintf(stderr, "-%s: error: don't know how to set %s\n", prog, Argv[1]);
+
+	/*
+	if (!strcmp(Argv[1], "echo")) {
+		Secho(Argv);
+	}
+
+
+	if (!strcmp(Argv[1], "verbose")) {
+		Sverbose(Argv);
+	}
+
+	if (!strcmp(Argv[1], "debug")) {
+		Sdebug(Argv);
+	}
+	*/
+}
+
+/*----------------------------------------------------------------------------*/
+
+void Sexec(char *Argv[])
+{
+	if (!strcmp(Argv[2], "vp")) {
+		exec_flag = 0;
+	}
+
+	if (!strcmp(Argv[2], "ve")) {
+		exec_flag = 1;
+	}
+
+	if (!strcmp(Argv[2], "lp")) {
+		exec_flag = 2;
+	}
+
+	if (v_flag)
+	{
+		fprintf(stderr, "-%s: set: successfully set exec mode %s\n",
+				prog, Argv[2]);
+	}
+}
+
+
+/*----------------------------------------------------------------------------*/
+
+#if 0
+
+void Secho(char *Argv[])
+{
+	if (!strcmp(Argv[2], "on")) {
+		e_flag = 1;
+	}
+
+	if (!strcmp(Argv[2], "off")) {
+		e_flag = 0;
+	}
+
+	if (v_flag)
+	{
+		fprintf(stderr, "-%s: set: successfully set to echo mode %s\n",
+				prog, Argv[2]);
+	}
+}
+
+/*----------------------------------------------------------------------------*/
+
+void Sverbose(char *Argv[])
+{
+	if (!strcmp(Argv[2], "on")) {
+		v_flag = 1;
+	}
+
+	if (!strcmp(Argv[2], "off")) {
+		v_flag = 0;
+	}
+
+	if (v_flag)
+	{
+		fprintf(stderr, "-%s: set: successfully set to verbose mode %s\n",
+				prog, Argv[2]);
+	}
+}
+
+/*----------------------------------------------------------------------------*/
+
+void Sdebug(char *Argv[])
+{
+	if (!strcmp(Argv[2], "on")) {
+		d_flag = 1;
+	}
+
+	if (!strcmp(Argv[2], "off")) {
+		d_flag = 0;
+	}
+
+	if (v_flag)
+	{
+		fprintf(stderr, "-%s: set: successfully set to debug mode %s\n",
+				prog, Argv[2]);
+	}
+}
+
+#endif

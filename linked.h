@@ -35,15 +35,23 @@ struct process_list
 
 //------------------------------------------------------------------------------
 
+/* process_list_allocate() allocates a new process_list */
 struct process_list *process_list_allocate(void);
 
+/* process_list_reference() keeps track of times process_list is referenced */
 struct process_list *process_list_reference(struct process_list * const list);
 
+/* process_list_deallocate() deallocates a process_list completely */
 void process_list_deallocate(struct process_list * const list);
 
+/* process_list_print() prints entire process_list */
 void process_list_print(const struct process_list * const list);
 
+/* process_list_append() adds a node to a process_list */
 void process_list_append(struct process_list * const list, const char *command, pid_t pid, pid_t pgid);
+
+/* process_list_allocate() removes a node from a process_list */
+void process_list_pop(struct process_list * const list, pid_t pid);
 
 //------------------------------------------------------------------------------
 

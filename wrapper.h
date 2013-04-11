@@ -1,12 +1,10 @@
 /* CMPSC 311, Spring 2013, Project 7
- *
- * Author:		Jake Jones
- * Email:		jaj5333@psu.edu
- *
- * Author:		Scott Cheloha
- * Email:		ssc5145@psu.edu
- *
- * originally by: Don Heller
+ * 
+ * Author: Jacob Jones
+ * Email: jaj5333@psu.edu
+ * 
+ * Author: Scott Cheloha
+ * Email: ssc5145@psu.edu
  */
 
 #ifndef WRAPPER_H
@@ -38,9 +36,9 @@ FILE *Fopen(const char * restrict filename, const char * restrict mode,
 
 int Fclose(FILE *stream, const char *func, const int line);
 
-pid_t Fork(void);
+pid_t Fork(const char* func, const int line);
 
-int Kill(pid_t pid, int sig);
+int Kill(pid_t pid, int sig, const char* func, const int line);
 
 sighandler_t Signal(int signum, sighandler_t handler);
 

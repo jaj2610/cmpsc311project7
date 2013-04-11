@@ -1,3 +1,11 @@
+/* CMPSC 311, Spring 2013, Project 7
+ * 
+ * Author: Jacob Jones
+ * Email: jaj5333@psu.edu
+ * 
+ * Author: Scott Cheloha
+ * Email: ssc5145@psu.edu
+ */
 
 #ifndef BUILTIN_H
 #define BUILTIN_H
@@ -65,5 +73,38 @@ void Pjobs(void);
  * 	toggle -- user can toggle verbosity, debug, and echo from interactive mode
  */
 void Help(void);
+
+/* Toggle allows the user to toggle on/off echo, verbosity, and debug output
+ * Format is
+ * 	toggle [e|v|d]
+ */
+void Toggle(char *Argv[]);
+
+/* User-friendly wrapper for Print_Options() */
+void Options(void);
+
+/* Prints the current command line options to the console
+ * Note that this is not a builtin command, and is only run when
+ * 'options' is called from the shell.
+ */
+void Print_Options(void);
+
+
+/* Set() allows toggling echo, exec types, verbose, and debug */
+void Set(char *Argv[]);
+
+/* Secho() toggles exec type (vp,ve,lp) */
+void Sexec(char *Argv[]);
+
+#if 0
+/* Secho() toggles echo on or off */
+void Secho(char *Argv[]);
+
+/* Secho() toggles verbose on or off */
+void Sverbose(char *Argv[]);
+
+/* Secho() toggles debug on or off */
+void Sdebug(char *Argv[]);
+#endif
 
 #endif /* BUILTIN_H */

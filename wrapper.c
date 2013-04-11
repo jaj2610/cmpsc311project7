@@ -1,12 +1,10 @@
 /* CMPSC 311, Spring 2013, Project 7
- *
- * Author:		Jake Jones
- * Email:		jaj5333@psu.edu
- *
- * Author:		Scott Cheloha
- * Email:		ssc5145@psu.edu
- *
- * originally by: Don Heller
+ * 
+ * Author: Jacob Jones
+ * Email: jaj5333@psu.edu
+ * 
+ * Author: Scott Cheloha
+ * Email: ssc5145@psu.edu
  */
 
 #include <stdio.h>
@@ -103,56 +101,92 @@ int Fclose(FILE *stream, const char *func, const int line)
 {
 	if (stream == NULL)
 	{
-		fprintf(stderr, 
-				"-%s: %s() at line %d failed: Fclose() cannot close NULL stream\n",
+		if (d_flag)
+		{
+			fprintf(stderr, 
+				"-%s: %s() at line %d failed: fclose() cannot close null stream\n",
 				prog, func, line);
+		}
+		else
+		{
+			fprintf(stderr, "-%s: fclose() cannot close null stream\n",
+					prog);
+		}
 
 		return EOF;
 	}
 
 	if (fclose(stream) == EOF)
 	{
-		fprintf(stderr,
-				"-%s: %s() at line %d failed: Fclose cannot close stream: %s\n",
+		if (d_flag)
+		{
+			fprintf(stderr, "-%s: %s() at line %d: fclose() failed: %s\n",
 				prog, func, line, strerror(errno));
+		}
+		else
+		{
+			fprintf(stderr, "-%s: fclose() failed: %s\n",
+					prog, strerror(errno));
+		}
+
 		return EOF;
 	}
 
 	return 0;
 }
 
-pid_t Fork(void)
+pid_t Fork(const char *func, const int line)
 {
 	pid_t pid;
 
-	if ((pid = fork()) < 0) {
-		fprintf(stderr, "-%s: fork() failed: %s\n", prog, strerror(errno));
+	if ((pid = fork()) == (pid_t) -1) 
+	{
+		if (d_flag)
+		{
+			fprintf(stderr, "-%s: %s() at line %d: fork() from process %d failed: %s\n",
+				prog, func, line, getpid(), strerror(errno));
+		}
+		else
+		{
+			fprintf(stderr, "-%s: fork() from process %d failed: %s\n",
+				prog, getpid(), strerror(errno));
+		}
 	}
 
 	return pid;
 }
 
-int Kill(pid_t pid, int sig)
+int Kill(pid_t pid, int sig, const char* func, const int line)
 {
-  int response;
-  response = kill(pid, sig);
-  if (response == -1)
-  {
-    fprintf(stderr, "-%s: Kill() failed: %s\n", prog, strerror(errno));
-  }
-
-  return response;
+	int response;
+	response = kill(pid, sig);
+	if (response == -1)
+	{
+		if (d_flag) 
+		{
+			fprintf(stderr, "-%s: %s() at line %d: kill(%d, %d) failed: %s\n",
+					prog, func, line, pid, sig, strerror(errno));
+  		}
+		else 
+		{
+			fprintf(stderr, "-%s: kill(%d, %d) failed: %s\n",
+					prog, pid, sig, strerror(errno));
+		}
+	}
+			
+	return response;
 }
 
 sighandler_t Signal(int signum, sighandler_t handler)
 {
   sighandler_t response;
 
-  response = signal(signum, handler);;
+  response = signal(signum, handler);
 
   if (response == SIG_ERR)
   {
-    fprintf(stderr, "signal(%d, handler) failed: %s\n", signum, strerror(errno));
+    fprintf(stderr, "-%s: signal(%d, handler) failed: %s\n",
+			 prog, signum, strerror(errno));
   }
 
   return response;

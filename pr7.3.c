@@ -1,11 +1,10 @@
-/* CMPSC 311 Project 7 version 3
- *
- * Author:   Jacob Jones
- * Email:    jaj5333@psu.edu
+/* CMPSC 311, Spring 2013, Project 7
  * 
- * Author:	Scott Cheloha
- * Email:	ssc5145@psu.edu
- *
+ * Author: Jacob Jones
+ * Email: jaj5333@psu.edu
+ * 
+ * Author: Scott Cheloha
+ * Email: ssc5145@psu.edu
  */
 
 /*----------------------------------------------------------------------------*/
@@ -16,11 +15,13 @@
 #include <errno.h>
 #include <string.h>
 #include <sys/wait.h>
+#include <signal.h>
 
 #include "pr7.h"
 #include "wrapper.h"
 #include "builtin.h"
 #include "linked.h"
+#include "exec.h"
 
 #define MAXARGS 128
 
@@ -30,6 +31,10 @@ int e_flag = 0;
 int v_flag = 0;
 int d_flag = 0;
 int s_flag = 0;
+int exec_flag = 0;
+pid_t fg_pid = -2;
+pid_t fg_pgid = -2;
+pid_t bg_pgid = -3;
 char *s_filename = "pr7.init";  // default startup file name
 struct process_list *bg_processes;
 
@@ -39,14 +44,19 @@ int main(int argc, char *argv[])
 {
   eval_options(argc, argv);
 
-  bg_processes = process_list_allocate();
+  // install signal handlers
+  Signal(SIGCHLD, sig_chld);
+  // Signal(SIGINT, sig_int);
+  Signal(SIGSTOP, sig_stp);
 
   int status = EXIT_SUCCESS;
 
   if (v_flag)
   {
-    list_options();
+    verbose_greeting();
   }
+
+  bg_processes = process_list_allocate();
 
   if (s_flag)
   {
@@ -86,37 +96,36 @@ static void usage(int status)
 
 /*-----------------------------------------------------------------------------*/
 
-// List options specified for pr7 at the command-line.
-// Only runs if v_flag is set.
-void list_options(void)
+void verbose_greeting(void)
 {
-  printf("hello from pr7!\n");
-  printf("options chosen:\n");
-
+	printf("-%s: Hello, %s!\n", prog, getenv("USER"));
+	Options();
+/*
   if (i_flag)
   {
-    puts("   -i: interactive mode");
+    puts("  [-i] interactive prompt");
   }
 
   if (e_flag)
   {
-    puts("   -e: echo commands before execution");
+    puts("  [-e] echo commands before execution");
   }
 
   if (v_flag)
   {
-    puts("   -v: verbose mode");
+    puts("  [-v] verbose output");
   }
 
   if (d_flag)
   {
-    puts("   -d: debug mode");
+    puts(" [-d] debug output");
   }
 
   if (s_flag)
   {
-    printf("   -s: using startup file %s\n", s_filename);
+    printf("  [-s]  startup file %s\n", s_filename);
   }
+  */
 }
 
 /*----------------------------------------------------------------------------*/
@@ -132,11 +141,10 @@ int prompt(int status)
     fgets(cmdline, MAX_LINE, stdin);   /* cmdline includes trailing newline */
     if (feof(stdin))                   /* end of file */
     { 
-      break;
+		break;
     }
 
     status = eval_line(cmdline);
-
   }
 
   return status;
@@ -148,9 +156,7 @@ int prompt(int status)
 void eval_options(int argc, char *argv[])
 {
   extern char *optarg;
-  extern int optind;
   extern int optopt;
-  extern int opterr;
   int ch;
 
   /* set flags */
@@ -179,9 +185,10 @@ void eval_options(int argc, char *argv[])
         break;
       case 's':
         s_flag++;
+
         if (s_flag > 1)
         {
-          fprintf(stderr, "%s: invalid option; only one startup file allowed\n", 
+          fprintf(stderr, "-%s: error: cannot specify more than one startup file\n", 
 					 prog);
           exit(1);
         }
@@ -191,11 +198,14 @@ void eval_options(int argc, char *argv[])
         }
         break;
       case '?':
-        fprintf(stderr, "%s: invalid option '%c'\n", prog, optopt);
+        fprintf(stderr, "-%s: error: invalid option '%c'\n", prog, optopt);
         usage(EXIT_FAILURE);
         break;
       case ':':
-        fprintf(stderr, "%s: invalid option '%c' (missing argument)\n", prog, optopt);
+        fprintf(stderr, "-%s: error: option '%c' needs filename argument\n",
+				  prog, optopt);
+		  usage(EXIT_FAILURE);
+		  break;
       default:
         usage(EXIT_FAILURE);
         break;
@@ -210,7 +220,6 @@ int eval_line(char *cmdline)
 {
   char *Argv[MAXARGS];  /* Argv for execve() */
   char buf[MAX_LINE];    /* holds modified command line */
-  pid_t pid;            /* process id */
 
   strcpy(buf, cmdline); /* buf[] will be modified by parse() */
 
@@ -222,10 +231,22 @@ int eval_line(char *cmdline)
   {
     return status;
   }
+
+  if (e_flag)
+  {
+    for (int i = 0; Argv[i] != NULL; i++)
+    {
+      printf("%s ", Argv[i]);
+    }
+    puts("");
+  }
+  
   if (Builtin(Argv))
   {
     return status;
   }
+
+  status = new_child(Argv, background, status);
 
   return status;
 }
@@ -278,6 +299,8 @@ int parse(char *buf, char *Argv[])
   return bg;
 }
 
+/*----------------------------------------------------------------------------*/
+
 /* Prints an error message
  * format is:
  * 	-[program name]: [command name]: [msg1]: [msg2]
@@ -288,3 +311,59 @@ void shell_msg(const char* function_name, const char* msg)
 {
 	fprintf(stderr, "-%s: %s: %s\n", prog, function_name, msg);
 }
+
+/*----------------------------------------------------------------------------*/
+
+void sig_chld(int signum)
+{
+  int status;
+
+  /* We received a SIGCHLD signal, so we loop through the background process
+	* list and reap all zombies.
+	*/
+  for (pid_t pid = waitpid(-1, &status, WNOHANG);
+       pid != 0 && pid != -1;
+       pid = waitpid(-1, &status, WNOHANG))
+  {
+    process_list_pop(bg_processes, pid); // this will print message saying removed
+  }
+
+  return;
+}
+
+/*----------------------------------------------------------------------------*/
+
+void sig_int(int signum)
+{
+  int status;
+
+  // if within fg process
+  if (fg_pid == 0)
+  {
+    ; // ignore SIGINT
+  }
+  // terminate fg process group
+  else
+  {
+    Kill(fg_pid, signum, __func__, __LINE__);
+  }
+  
+
+  // How to terminate fg process group?
+  
+
+  return;
+}
+
+/*----------------------------------------------------------------------------*/
+
+void sig_stp(int signum)
+{
+  int status;
+
+  // Stop fg process group
+
+  return;
+}
+
+/*----------------------------------------------------------------------------*/

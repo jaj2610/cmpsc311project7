@@ -1,4 +1,11 @@
-
+/* CMPSC 311, Spring 2013, Project 7
+ * 
+ * Author: Jacob Jones
+ * Email: jaj5333@psu.edu
+ * 
+ * Author: Scott Cheloha
+ * Email: ssc5145@psu.edu
+ */
 
 #ifndef PR7_H
 #define PR7_H
@@ -15,29 +22,69 @@
 #include <limits.h>
 #include <sys/param.h>
 
-/* external global variables */
+
+/* Global Variables */
 extern const char *prog;
 extern int i_flag;
 extern int e_flag;
 extern int v_flag;
 extern int d_flag;
 extern int s_flag;
+extern int exec_flag;	// 0 for vp, 1 for ve, 2 for lp
+extern pid_t fg_pid;
+extern pid_t fg_pgid;
+extern pid_t bg_pgid;
 extern char *s_filename;
 extern struct process_list *bg_processes;
 
 extern char **environ;
 
+/*----------------------------------------------------------------------------*/
 
 
 /* Prototypes for functions in pr7.3.c */
-void list_options(void);
+
+
+/* Starts the prompt with a greeting and lists
+ * the command line options set.
+ * Only runs if -v is set at the command line.
+ */
+void verbose_greeting(void);
+
+/* Loop that prints the prompt and processes
+ * commands entered by the user, line by line.
+ * Only runs if -i is set at the command line.
+ */
 int prompt(int status);
+
+/* Function containing a getopt() loop for
+ * processing command line arguments
+ * and assigning the appropriate global variables.
+ *
+ * Runs once at the start of pr7's main()
+ */
 void eval_options(int argc, char *argv[]);
-int eval_line(char *cmdline);                   /* evaluate a command line */
-int parse(char *buf, char *Argv[]);             /* build the Argv array */
+
+/* Evaluates a given command and takes appropriate action. */
+int eval_line(char *cmdline);                   
+
+/* Builds the Argv[] array from a command line.
+ * Run both in prompt() and when a startup file is specified.
+ */
+int parse(char *buf, char *Argv[]);
+
 void shell_msg(const char* function_name, const char* msg);
 
+// Still needs work
+void sig_chld(int signum);
+void sig_int(int signum);
+void sig_stp(int signum);
 
+
+/*----------------------------------------------------------------------------*/
+
+
+/* Some limits for the shell. */
 
 /*
  *  MAX_LINE            input line length
