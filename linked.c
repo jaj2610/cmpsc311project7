@@ -69,10 +69,10 @@ void process_list_print(const struct process_list * const list)
     { ; }
   else
     {
-      puts("Process:");
-      puts("PID   PGID   Status   Command\n");
+      puts("Processes:");
+      puts("   PID       PGID    Status     Command");
       for (struct node *p = list->head; p != NULL; p = p->next)
-	{ printf("  [%d]   [%d]   [%s]   %s\n", p->pid, p->pgid, p->status, p->command);; }
+	{ printf("   [%d]   [%d]   [%s]   %s\n", p->pid, p->pgid, p->status, p->command);; }
     }
 }
 
@@ -111,8 +111,11 @@ void process_list_pop(struct process_list * const list, pid_t pid)
     {
       prev->next = p->next;
     }
-      free(prev); // free(NULL) is harmless
-      free(p->command);
-      prev = p;
+    
+    fprintf(stderr, "-%s: %s pid: %d pgid: %d has terminated.\n", prog, p->command, p->pid, p->pgid);
+    
+    free(prev); // free(NULL) is harmless
+    free(p->command);
+    prev = p;
   }
 }

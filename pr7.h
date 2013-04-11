@@ -48,6 +48,11 @@ int eval_line(char *cmdline);                   /* evaluate a command line */
 int parse(char *buf, char *Argv[]);             /* build the Argv array */
 void shell_msg(const char* function_name, const char* msg);
 
+// Still need work
+void sig_chld(int signum);
+void sig_int(int signum);
+void sig_stp(int signum);
+
 
 
 /*

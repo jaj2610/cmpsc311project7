@@ -23,6 +23,7 @@
 #include "exec.h"
 #include "pr7.h"
 #include "wrapper.h"
+#include "linked.h"
 
 //------------------------------------------------------------------------------
 
@@ -74,6 +75,13 @@ int new_child(char *Argv[], int background, int status)
     else
     {
       // modify background process list
+      process_list_append(bg_processes, Argv[0], pid, bg_pgid);
+
+      if (v_flag)
+      {
+        fprintf(stderr, "%s successfully added to background process list.\n",
+        Argv[0]);
+      }
 
       return 0;
     }
@@ -84,6 +92,7 @@ int new_child(char *Argv[], int background, int status)
 
 void exec(char *Argv[], int status)
 {
+  // use execvp
   if (exec_flag == 0)
   {
     if ((status = execvp(Argv[0], Argv)) == -1)
@@ -93,13 +102,15 @@ void exec(char *Argv[], int status)
     }
   }
 
+  // use execve
   if (exec_flag == 1)
   {
-    ; // use execve
+    ;
   }
 
+  // use execlp
   if (exec_flag == 2)
   {
-    ; // use execlp
+    ;
   }
 }

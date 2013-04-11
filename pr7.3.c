@@ -15,6 +15,7 @@
 #include <errno.h>
 #include <string.h>
 #include <sys/wait.h>
+#include <signal.h>
 
 #include "pr7.h"
 #include "wrapper.h"
@@ -44,6 +45,9 @@ int main(int argc, char *argv[])
   eval_options(argc, argv);
 
   // install signal handlers
+  Signal(SIGCHLD, sig_chld);
+  // Signal(SIGINT, sig_int);
+  Signal(SIGSTOP, sig_stp);
 
   int status = EXIT_SUCCESS;
 
@@ -225,6 +229,16 @@ int eval_line(char *cmdline)
   {
     return status;
   }
+
+  if (e_flag)
+  {
+    for (int i = 0; Argv[i] != NULL; i++)
+    {
+      printf("%s ", Argv[i]);
+    }
+    puts("");
+  }
+  
   if (Builtin(Argv))
   {
     return status;
@@ -283,6 +297,8 @@ int parse(char *buf, char *Argv[])
   return bg;
 }
 
+/*----------------------------------------------------------------------------*/
+
 /* Prints an error message
  * format is:
  * 	-[program name]: [command name]: [msg1]: [msg2]
@@ -293,3 +309,57 @@ void shell_msg(const char* function_name, const char* msg)
 {
 	fprintf(stderr, "-%s: %s: %s\n", prog, function_name, msg);
 }
+
+/*----------------------------------------------------------------------------*/
+
+void sig_chld(int signum)
+{
+  int status;
+
+  // loop through all zombie processes and remove them from background processes
+  for (pid_t pid = waitpid(-1, &status, WNOHANG);
+       pid != 0 && pid != -1;
+       pid = waitpid(-1, &status, WNOHANG))
+  {
+    process_list_pop(bg_processes, pid); // this will print message saying removed
+  }
+
+  return;
+}
+
+/*----------------------------------------------------------------------------*/
+
+void sig_int(int signum)
+{
+  int status;
+
+  // if within fg process
+  if (fg_pid == 0)
+  {
+    ; // ignore SIGINT
+  }
+  // terminate fg process group
+  else
+  {
+    Kill(fg_pid, signum);
+  }
+  
+
+  // How to terminate fg process group?
+  
+
+  return;
+}
+
+/*----------------------------------------------------------------------------*/
+
+void sig_stp(int signum)
+{
+  int status;
+
+  // Stop fg process group
+
+  return;
+}
+
+/*----------------------------------------------------------------------------*/
