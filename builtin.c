@@ -18,7 +18,6 @@
  * 	penv -- needs writing
  * 	senv -- needs writing
  * 	unsenv -- needs writing
- *  pjobs
  * 	help
  * 	limits -- print the limit macros from pr7.h
  * 	toggle -- toggle verbosity, echo, debug modes from within the shell
@@ -34,7 +33,6 @@
 #include "builtin.h"
 #include "pr7.h" // included for shell_msg()
 #include "wrapper.h"
-#include "linked.h"
 
 int Builtin(char *Argv[])
 {
@@ -78,11 +76,6 @@ int Builtin(char *Argv[])
 	/* penv command */
 	if (!strcmp(Argv[0], "help")) {
 		Help(); return 1;
-	}
-
-	/* pjobs command */
-	if (!strcmp(Argv[0], "pjobs")) {
-		Pjobs(); return 1;
 	}
 
 	/* ignore singleton & */
@@ -360,10 +353,5 @@ void Help(void)
   puts("  penv       print one or all environment variables");
   puts("  senv       set an environment variable");
   puts("  unsenv     unset an environment variables");
-  puts("  pjobs      list background processes");
 }
 
-void Pjobs(void)
-{
-	process_list_print(bg_processes);
-}

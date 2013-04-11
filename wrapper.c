@@ -126,7 +126,7 @@ pid_t Fork(void)
 	pid_t pid;
 
 	if ((pid = fork()) < 0) {
-		fprintf(stderr, "fork() failed: %s\n", strerror(errno));
+		fprintf(stderr, "-%s: fork() failed: %s\n", prog, strerror(errno));
 	}
 
 	return pid;
