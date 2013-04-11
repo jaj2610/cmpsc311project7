@@ -22,11 +22,14 @@
 
 #include "exec.h"
 #include "pr7.h"
+#include "wrapper.h"
 
 //------------------------------------------------------------------------------
 
-int new_child(pid_t pid, char *Argv[], int background, int status)
+int new_child(char *Argv[], int background, int status)
 {
+  pid_t pid;            /* process id */
+
   // begin forking child process
   if ((pid = Fork()) < 0)
   {
@@ -75,6 +78,8 @@ int new_child(pid_t pid, char *Argv[], int background, int status)
       return 0;
     }
   }
+
+  return status;
 }
 
 void exec(char *Argv[], int status)

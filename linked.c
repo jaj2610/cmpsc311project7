@@ -101,7 +101,7 @@ void process_list_append(struct process_list * const list, const char *command, 
 
 //------------------------------------------------------------------------------
 
-struct process_list *process_list_pop(struct process_list * const list, pid_t pid)
+void process_list_pop(struct process_list * const list, pid_t pid)
 {
   struct node *prev = NULL;
 

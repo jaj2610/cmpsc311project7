@@ -74,4 +74,20 @@ void Pjobs(void);
  */
 void Help(void);
 
+/* Set() allows toggling echo, exec types, verbose, and debug */
+void Set(char *Argv[]);
+
+/* Secho() toggles echo on or off */
+void Secho(char *Argv[]);
+
+/* Secho() toggles exec type (vp,ve,lp) */
+void Sexec(char *Argv[]);
+
+/* Secho() toggles verbose on or off */
+void Sverbose(char *Argv[]);
+
+/* Secho() toggles debug on or off */
+void Sdebug(char *Argv[]);
+
+
 #endif /* BUILTIN_H */

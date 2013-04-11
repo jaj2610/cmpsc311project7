@@ -20,7 +20,7 @@
  * command is forked into new process and put in fg or bg group
  * process is then passed along to exec(ve,vp,lp)
  */
-int new_child(pid_t pid, char *Argv[], int background, int status);
+int new_child(char *Argv[], int background, int status);
 
 /* exec() passes a process to exec(ve,vp,lp) depending on what flags are toggled
  * 0 for vp, 1 for ve, 2 for lp

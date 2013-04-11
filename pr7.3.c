@@ -154,9 +154,7 @@ int prompt(int status)
 void eval_options(int argc, char *argv[])
 {
   extern char *optarg;
-  extern int optind;
   extern int optopt;
-  extern int opterr;
   int ch;
 
   /* set flags */
@@ -216,7 +214,6 @@ int eval_line(char *cmdline)
 {
   char *Argv[MAXARGS];  /* Argv for execve() */
   char buf[MAX_LINE];    /* holds modified command line */
-  pid_t pid;            /* process id */
 
   strcpy(buf, cmdline); /* buf[] will be modified by parse() */
 
@@ -233,7 +230,7 @@ int eval_line(char *cmdline)
     return status;
   }
 
-  new_child(pid, Argv, background, status);
+  status = new_child(Argv, background, status);
 
   return status;
 }

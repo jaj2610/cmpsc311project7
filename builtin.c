@@ -22,10 +22,10 @@
  * 	help   -- list special commands
  *
  * 	limits -- needs to be written, print the limit macros from pr7.h
- *  set echo -- needs to be written, toggle echo mode
- * 	set debug -- needs to be written, toggle debug mode
- *  set exec -- needs to be written, toggle exec types (lp,vp,ve)
- *  set verbose -- needs to be written, toggle verbose mode
+ *  set echo -- toggle echo mode on or off
+ * 	set debug -- toggle debug mode on or off
+ *  set exec -- toggle exec types (lp,vp,ve)
+ *  set verbose -- toggle verbose mode on or off
  */
 
 #include <stdio.h>
@@ -87,6 +87,11 @@ int Builtin(char *Argv[])
 	/* pjobs command */
 	if (!strcmp(Argv[0], "pjobs")) {
 		Pjobs(); return 1;
+	}
+
+	/* set command */
+	if (!strcmp(Argv[0], "set")) {
+		Set(Argv); return 1;
 	}
 
 	/* ignore singleton & */
@@ -375,9 +380,106 @@ void Help(void)
   puts("  pjobs      list background processes");
 }
 
-/*----------------------------------------------------------------------------*/
-
 void Pjobs(void)
 {
 	process_list_print(bg_processes);
+}
+
+/*----------------------------------------------------------------------------*/
+
+void Set(char *Argv[])
+{
+	if (!strcmp(Argv[1], "echo")) {
+		Secho(Argv);
+	}
+
+	if (!strcmp(Argv[1], "exec")) {
+		Sexec(Argv);
+	}
+
+	if (!strcmp(Argv[1], "verbose")) {
+		Sverbose(Argv);
+	}
+
+	if (!strcmp(Argv[1], "debug")) {
+		Sdebug(Argv);
+	}
+}
+
+/*----------------------------------------------------------------------------*/
+
+void Secho(char *Argv[])
+{
+	if (!strcmp(Argv[2], "on")) {
+		e_flag = 1;
+	}
+
+	if (!strcmp(Argv[2], "off")) {
+		e_flag = 0;
+	}
+
+	if (v_flag)
+	{
+		fprintf(stderr, "-%s: set: successfully set to echo mode %s\n",
+				prog, Argv[2]);
+	}
+}
+
+/*----------------------------------------------------------------------------*/
+
+void Sexec(char *Argv[])
+{
+	if (!strcmp(Argv[2], "vp")) {
+		exec_flag = 0;
+	}
+
+	if (!strcmp(Argv[2], "ve")) {
+		exec_flag = 1;
+	}
+
+	if (!strcmp(Argv[2], "lp")) {
+		exec_flag = 2;
+	}
+
+	if (v_flag)
+	{
+		fprintf(stderr, "-%s: set: successfully set to exec mode %s\n",
+				prog, Argv[2]);
+	}
+}
+
+/*----------------------------------------------------------------------------*/
+
+void Sverbose(char *Argv[])
+{
+	if (!strcmp(Argv[2], "on")) {
+		v_flag = 1;
+	}
+
+	if (!strcmp(Argv[2], "off")) {
+		v_flag = 0;
+	}
+
+	if (v_flag)
+	{
+		fprintf(stderr, "-%s: set: successfully set to verbose mode %s\n",
+				prog, Argv[2]);
+	}
+}
+
+void Sdebug(char *Argv[])
+{
+	if (!strcmp(Argv[2], "on")) {
+		d_flag = 1;
+	}
+
+	if (!strcmp(Argv[2], "off")) {
+		d_flag = 0;
+	}
+
+	if (v_flag)
+	{
+		fprintf(stderr, "-%s: set: successfully set to debug mode %s\n",
+				prog, Argv[2]);
+	}
 }

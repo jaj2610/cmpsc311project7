@@ -51,7 +51,7 @@ void process_list_print(const struct process_list * const list);
 void process_list_append(struct process_list * const list, const char *command, pid_t pid, pid_t pgid);
 
 /* process_list_allocate() removes a node from a process_list */
-struct process_list *process_list_pop(struct process_list * const list, pid_t pid);
+void process_list_pop(struct process_list * const list, pid_t pid);
 
 //------------------------------------------------------------------------------
 
