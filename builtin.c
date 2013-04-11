@@ -223,11 +223,94 @@ void Penv(char *Argv[])
 
 void Senv(char *Argv[])
 {
-	// If Argv[1] is NULL, no env. variable was specified, so we do nothing
+	// If Argv[1] is NULL, no env. variable or value was specified, so we do nothing
 	if (!Argv[1])
 	{
 		return;
 	}
+
+	// Duplicate the string in Argv[1] for modification
+	char *buf;
+	if ((buf = Strdup(Argv[1], __func__, __LINE__)) == NULL)
+	{
+		shell_msg("senv", strerror(errno));
+		free(buf);
+		return;
+	}
+	
+	// If no '=' is found, the command does not conform to formatting specs,
+	// so issue a message, free buf, and return to prompt
+	char *index_of_equal;
+	if ((index_of_equal = strpbrk(buf, "=")) == NULL)
+	{
+		shell_msg("senv", "format is 'senv name=value'");
+		free(buf);
+		return;
+	}
+
+	// Allocate space for name
+	// If we fail, free buf and return to prompt
+	
+	char *name;
+	int namelength = index_of_equal - buf;
+	if ((name = Malloc(namelength + 1, __func__, __LINE__)) == NULL)
+	{
+		shell_msg("senv", strerror(errno));
+		free(buf);
+		return;
+	}
+
+	// Copy from buf to name
+	strncpy(name, buf, namelength);
+	name[namelength+1] = '\0';
+
+
+	// Allocate space for value
+	// If we fail, free buf, free name, and return to prompt
+
+	char *value;
+	int valuelength = strlen(buf) - namelength;
+	if ((value = Malloc(valuelength, __func__, __LINE__)) == NULL)
+	{
+		shell_msg("senv", strerror(errno));
+		free(buf); free(name);
+		return;
+	}
+
+	// Copy from buf to value
+	strncpy(value, buf+namelength+1, valuelength-1);
+	value[valuelength] = '\0';
+
+
+	// Having successfully parsed name and value,
+	// We can tell our verbose users exactly what we're doing
+	if (v_flag)
+	{
+		fprintf(stderr, "-%s: %s: setting environment variable %s to %s\n",
+				prog, "senv", name, value);
+	}
+
+	// Attempt to set the environment variable
+	if ((setenv(name, value, 1) == -1))
+	{
+		shell_msg("senv", strerror(errno));
+		free(buf);
+		free(name);
+		free(value);
+	}
+
+		if (v_flag)
+	{
+		fprintf(stderr, "-%s: %s: successfully set environment variable %s to %s\n",
+				prog, "senv", name, value);
+	}
+
+
+	// Free allocations and return to shell
+	free(buf);
+	free(name);
+	free(value);
+	return;
 
 	
 }

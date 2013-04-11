@@ -217,7 +217,7 @@ int eval_line(char *cmdline)
 
   /* ignore empty lines */
   if (Argv[0] == NULL)          
-  { 
+  {
     return status;
   }
   if (Builtin(Argv))
