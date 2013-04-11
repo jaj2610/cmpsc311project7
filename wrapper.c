@@ -138,7 +138,7 @@ int Kill(pid_t pid, int sig)
   response = kill(pid, sig);
   if (response == -1)
   {
-    fprintf(stderr, "kill() failed: %s\n", strerror(errno));
+    fprintf(stderr, "-%s: Kill() failed: %s\n", prog, strerror(errno));
   }
 
   return response;
