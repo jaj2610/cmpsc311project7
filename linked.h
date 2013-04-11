@@ -12,6 +12,9 @@
 
 //------------------------------------------------------------------------------
 
+#include <sys/types.h>
+
+
 // singly-linked list of names
 
 struct node

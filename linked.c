@@ -17,12 +17,13 @@
 
 #include "wrapper.h"
 #include "linked.h"
+#include "pr7.h"
 
 //------------------------------------------------------------------------------
 
 struct linked_list *linked_list_allocate(void)
 {
-  struct linked_list *list = Malloc(sizeof(struct linked_list));
+  struct linked_list *list = Malloc(sizeof(struct linked_list), __func__, __LINE__);
 
   list->head = list->tail = NULL;
   list->reference_count = 0;
@@ -48,14 +49,13 @@ void linked_list_deallocate(struct linked_list * const list)
 
   struct node *prev = NULL;
   for (struct node *p = list->head; p != NULL; p = p->next)
-    {
+  {
       free(prev);	// free(NULL) is harmless
-      free(p->node);
+      free(p->command);
       prev = p;
-    }
+  }
   free(prev);		// now, prev == list->tail
 
-  free(list->node);
   free(list);
 }
 
@@ -70,7 +70,7 @@ void linked_list_print(const struct linked_list * const list)
   else
     {
       for (struct node *p = list->head; p != NULL; p = p->next)
-	{ printf("  [%s]   [%s]   [%s]   %s\n", p->pid, p->pgid, p->status, p->command);; }
+	{ printf("  [%d]   [%d]   [%s]   %s\n", p->pid, p->pgid, p->status, p->command);; }
     }
 }
 
@@ -78,13 +78,13 @@ void linked_list_print(const struct linked_list * const list)
 
 void linked_list_append(struct linked_list * const list, const char *command, pid_t pid, pid_t pgid)
 {
-  struct node *p = Malloc(sizeof(struct node));
+  struct node *p = Malloc(sizeof(struct node), __func__, __LINE__);
 
   p->next = NULL;
   p->status = "Running";
   p->pid = pid;
   p->pgid = pgid;
-  p->command = Strdup(command);
+  p->command = Strdup(command,  __func__, __LINE__);
 
   if (list->head == NULL)	// empty list, list->tail is also NULL
     {

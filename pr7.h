@@ -23,6 +23,9 @@ extern int d_flag;
 extern int s_flag;
 extern char *s_filename;
 
+extern char **environ;
+
+
 
 /* Prototypes for functions in pr7.3.c */
 void list_options(void);
