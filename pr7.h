@@ -29,6 +29,7 @@ extern int e_flag;
 extern int v_flag;
 extern int d_flag;
 extern int s_flag;
+extern int exec_flag;	// 0 for vp, 1 for ve, 2 for lp
 extern pid_t fg_pid;
 extern pid_t fg_pgid;
 extern pid_t bg_pgid;

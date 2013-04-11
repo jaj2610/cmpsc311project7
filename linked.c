@@ -83,7 +83,7 @@ void process_list_append(struct process_list * const list, const char *command, 
   struct node *p = Malloc(sizeof(struct node), __func__, __LINE__);
 
   p->next = NULL;
-  p->status = "Running";
+  p->status = "RUNNING";
   p->pid = pid;
   p->pgid = pgid;
   p->command = Strdup(command,  __func__, __LINE__);

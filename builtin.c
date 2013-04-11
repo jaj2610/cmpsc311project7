@@ -22,7 +22,10 @@
  * 	help   -- list special commands
  *
  * 	limits -- needs to be written, print the limit macros from pr7.h
- * 	toggle -- needs to be written, toggle verbosity, echo, debug modes from within the shell
+ *  set echo -- needs to be written, toggle echo mode
+ * 	set debug -- needs to be written, toggle debug mode
+ *  set exec -- needs to be written, toggle exec types (lp,vp,ve)
+ *  set verbose -- needs to be written, toggle verbose mode
  */
 
 #include <stdio.h>
@@ -100,7 +103,7 @@ void Quit(void)
 {
 	if (bg_processes->head != NULL)
 	{
-		puts("Background processes are still running.")
+		puts("Background processes are still running.");
 		Pjobs();
 	}
 	else
@@ -371,6 +374,8 @@ void Help(void)
   puts("  unsenv     unset an environment variables");
   puts("  pjobs      list background processes");
 }
+
+/*----------------------------------------------------------------------------*/
 
 void Pjobs(void)
 {
