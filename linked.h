@@ -26,7 +26,7 @@ struct node
   char *command;		// command issued to start process
 };
 
-struct linked_list
+struct process_list
 {
   struct node *head;	// NULL indicates empty list
   struct node *tail;
@@ -35,15 +35,15 @@ struct linked_list
 
 //------------------------------------------------------------------------------
 
-struct linked_list *linked_list_allocate(void);
+struct process_list *process_list_allocate(void);
 
-struct linked_list *linked_list_reference(struct linked_list * const list);
+struct process_list *process_list_reference(struct process_list * const list);
 
-void linked_list_deallocate(struct linked_list * const list);
+void process_list_deallocate(struct process_list * const list);
 
-void linked_list_print(const struct linked_list * const list);
+void process_list_print(const struct process_list * const list);
 
-void linked_list_append(struct linked_list * const list, const char *command, pid_t pid, pid_t pgid);
+void process_list_append(struct process_list * const list, const char *command, pid_t pid, pid_t pgid);
 
 //------------------------------------------------------------------------------
 
