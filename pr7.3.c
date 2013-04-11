@@ -16,29 +16,12 @@
 #include <errno.h>
 #include <string.h>
 #include <sys/wait.h>
-#include <sys/param.h>
 
-#include "wrapper.h"
 #include "pr7.h"
+#include "wrapper.h"
+#include "builtin.h"
 
 #define MAXARGS 128
-
-void listOptions(void);
-int prompt(int argc, char *argv[], int status);
-void eval_options(int argc, char *argv[]);
-int eval_line(char *cmdline);                   /* evaluate a command line */
-int parse(char *buf, char *Argv[]);             /* build the Argv array */
-int builtin(char *Argv[]);                      /* if builtin command, run it */
-void Quit(void);
-void Echo(char *Argv[]);
-void Dir(void);
-void Cdir(char *Argv[]);
-void Penv(char *Argv[]);
-void Senv(char *Argv[]);
-void Unsenv(char *Argv[]);
-void Help(void);
-void shell_msg(const char* function_name, const char* msg);
-
 
 const char *prog = "pr7";
 int i_flag = 0;
@@ -49,8 +32,33 @@ int s_flag = 0;
 char *s_filename = "pr7.init";  // default startup file name
 
 
+/*----------------------------------------------------------------------------*/
 
-/*-----------------------------------------------------------------------------*/
+int main(int argc, char *argv[])
+{
+  eval_options(argc, argv);
+
+  int status = EXIT_SUCCESS;
+
+  if (v_flag)
+  {
+    list_options();
+  }
+
+  if (s_flag)
+  {
+    ; // do something with s_filename
+  }
+
+  if (i_flag)
+  {
+    status = prompt(argc, argv, status);
+  }
+
+  return status;
+}
+
+/*----------------------------------------------------------------------------*/
 
 static void usage(int status)
 {
@@ -73,35 +81,11 @@ static void usage(int status)
   exit(status);
 }
 
-/*----------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------*/
 
-int main(int argc, char *argv[])
-{
-  eval_options(argc, argv);
-
-  int status = EXIT_SUCCESS;
-
-  if (v_flag)
-  {
-    listOptions();
-  }
-
-  if (s_flag)
-  {
-    ; // do something with s_filename
-  }
-
-  if (i_flag)
-  {
-    status = prompt(argc, argv, status);
-  }
-
-  return status;
-}
-
-/*----------------------------------------------------------------------------*/
-
-void listOptions(void)
+// List options specified for pr7 at the command-line.
+// Only runs if v_flag is set.
+void list_options(void)
 {
   printf("hello from pr7!\n");
   printf("options chosen:\n");
@@ -157,6 +141,7 @@ int prompt(int argc, char *argv[], int status)
 
 /*----------------------------------------------------------------------------*/
 
+// Runs a getopt() loop to harvest command-line options for pr7
 void eval_options(int argc, char *argv[])
 {
   extern char *optarg;
@@ -193,7 +178,8 @@ void eval_options(int argc, char *argv[])
         s_flag++;
         if (s_flag > 1)
         {
-          fprintf(stderr, "%s: invalid option; only one startup file allowed\n", prog);
+          fprintf(stderr, "%s: invalid option; only one startup file allowed\n", 
+					 prog);
           exit(1);
         }
         else
@@ -216,6 +202,7 @@ void eval_options(int argc, char *argv[])
 
 /*----------------------------------------------------------------------------*/
 
+
 int eval_line(char *cmdline)
 {
   char *Argv[MAXARGS];  /* Argv for execve() */
@@ -232,7 +219,7 @@ int eval_line(char *cmdline)
   { 
     return status;
   }
-  if (builtin(Argv))
+  if (Builtin(Argv))
   {
     return status;
   }
@@ -288,204 +275,12 @@ int parse(char *buf, char *Argv[])
   return bg;
 }
 
-/*----------------------------------------------------------------------------*/
-
-/* if first arg is a builtin command, run it and return true
+/* Prints an error message
+ * format is:
+ * 	-[program name]: [command name]: [msg1]: [msg2]
  *
- * Compare to builtin_command() in CS:APP Fig. 8.23.
+ * Warning: WILL FAIL if function_name and/or msg1 are NULL.
  */
-
-int builtin(char *Argv[])
-{
-	// reset errno
-	errno = 0;
-
-  if (!strcmp(Argv[0], "quit"))     /* quit command */
-  { 
-    Quit();
-		return 1;
-  }
-
-  if (!strcmp(Argv[0], "echo"))		/* echo command */
-  {
-  	Echo(Argv);
-		return 1;
-  }
-
-  if (!strcmp(Argv[0], "dir"))		/* dir command */
-  {
-		Dir();
-		return 1;
-  }
-
-  if (!strcmp(Argv[0], "cdir"))		/* cdir command */
-  {
-		Cdir(Argv);
-		return 1;
-  }
-
-  if (!strcmp(Argv[0], "penv"))		/* penv command */
-  {
-		Penv(Argv);
-		return 1;
-  }
-
-  if (!strcmp(Argv[0], "senv"))		/* penv command */
-  {
-		Senv(Argv);
-		return 1;
-  }
-
-  if (!strcmp(Argv[0], "unsenv"))		/* penv command */
-  {
-		Unsenv(Argv);
-		return 1;
-  }
-
-  if (!strcmp(Argv[0], "help"))		/* penv command */
-  {
-		Help();
-		return 1;
-  }
-
-  if (!strcmp(Argv[0], "&"))        /* ignore singleton & */
-  {
-    return 1;
-  }
-
-  return 0;                       /* not a builtin command */
-}
-
-/*----------------------------------------------------------------------------*/
-
-void Quit(void)
-{
-  exit(0);
-}
-
-void Echo(char *Argv[])
-{
-	for (int i = 1; Argv[i] != NULL; i++)
-	{
-		printf("%s ", Argv[i]);
-	}
-
-	puts("");
-}
-
-void Dir(void)
-{
-	char *buf;
-
-	if (v_flag)
-	{
-		shell_msg("dir", "printing working directory");
-	}
-		
-
-	// Allocate MAXPATHLEN bytes for buf
-	if ((buf = Malloc(MAXPATHLEN, __func__, __LINE__)) == NULL) {
-		shell_msg("dir", strerror(errno));
-		return;
-	}
-
-	// Call getwd() 
-	getwd(buf);
-
-	// Check if getwd() failed,
-	// print a message on failure, print the directory name on success
-	if (errno != 0) {
-		shell_msg("dir", strerror(errno));	
-	}
-	else {
-		printf("%s\n", getwd(buf));
-	}
-
-	// free() buf and return
-	free(buf);
-	return;
-}
-
-void Cdir(char *Argv[])
-{
-	const char *target_dir;
-
-	// If the directory is unspecified, use env. var. HOME as target directory
-	if (Argv[1] == NULL) {
-		target_dir = getenv("HOME");
-	}
-	// Otherwise, use the specified directory
-	else {
-		target_dir = Argv[1];
-	}
-
-	if (v_flag)
-	{
-		fprintf(stderr, "-%s: %s: changing working directory to %s\n",
-				prog, "cdir", target_dir);
-	}	
-
-	// Check that the directory is not NULL
-	if (target_dir)
-	{
-		// attempt to change the working directory to Argv[1]
-		if (chdir(target_dir) == -1) {
-			shell_msg("cdir", strerror(errno));
-			return;
-		}
-		
-		// attempt to set env. var. PWD to Argv[1]
-		if (setenv("PWD", target_dir, 1) == -1) {
-			shell_msg("cdir", strerror(errno));
-			return;
-		}
-
-		if (v_flag)
-		{
-			fprintf(stderr, "-%s: %s: working directory changed to %s\n",
-					prog, "cdir", target_dir);
-		}	
-	}
-	// Strange circumstance where Argv[1] NULL but not caught,
-	// or HOME is unspecified by the environment
-	else {
-		shell_msg("cdir", "strange error; HOME is not set");
-	}
-}
-
-void Penv(char *Argv[])
-{
-  ;
-}
-
-void Senv(char *Argv[])
-{
-  ;
-}
-
-void Unsenv(char *Argv[])
-{
-  ;
-}
-
-void Help(void)
-{
-  puts("built-in commands:");
-  puts("  help       print this list");
-  puts("  quit       terminate pr7 if no background processes are running");
-  puts("  echo       print remaining command-line arguments");
-  puts("  dir        print current working directory");
-  puts("  cdir       change working directory");
-  puts("  penv       print one or all environment variables");
-  puts("  senv       set an environment variable");
-  puts("  unsenv     unset an environment variables");
-}
-
-// Prints an error message
-// format is:
-// 	-[program name]: [command name]: [msg1]: [msg2]
-//
-// Warning: shell_error WILL FAIL if function_name and/or msg1 are NULL
 void shell_msg(const char* function_name, const char* msg)
 {
 	fprintf(stderr, "-%s: %s: %s\n", prog, function_name, msg);

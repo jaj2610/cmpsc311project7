@@ -1,7 +1,10 @@
 /* CMPSC 311, Spring 2013, Project 7
  *
- * Author:   Scott Cheloha
- * Email:    ssc5145@psu.edu
+ * Author:		Jake Jones
+ * Email:		jaj5333@psu.edu
+ *
+ * Author:		Scott Cheloha
+ * Email:		ssc5145@psu.edu
  *
  * originally by: Don Heller
  */
@@ -83,11 +86,39 @@ FILE *Fopen(const char * restrict filename, const char * restrict mode,
   FILE *f = fopen(filename, mode);
   if (f == NULL)
   {
-      fprintf(stderr, "%s: %s() at line %d failed: fopen(%s): %s\n",
+      fprintf(stderr, "-%s: %s() at line %d failed: fopen(%s): %s\n",
 	prog, func, line, filename, strerror(errno));
   }
 
+  if (d_flag)
+  {
+	  fprintf(stderr, "-%s: %s() at line %d succeeded: Fopen() opened file %s\n",
+			  prog, func, line, filename);
+  }
+
   return f;
+}
+
+int Fclose(FILE *stream, const char *func, const int line)
+{
+	if (stream == NULL)
+	{
+		fprintf(stderr, 
+				"-%s: %s() at line %d failed: Fclose() cannot close NULL stream\n",
+				prog, func, line);
+
+		return EOF;
+	}
+
+	if (fclose(stream) == EOF)
+	{
+		fprintf(stderr,
+				"-%s: %s() at line %d failed: Fclose cannot close stream: %s\n",
+				prog, func, line, strerror(errno));
+		return EOF;
+	}
+
+	return 0;
 }
 
 pid_t Fork(void)

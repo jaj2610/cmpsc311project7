@@ -23,6 +23,17 @@ extern int d_flag;
 extern int s_flag;
 extern char *s_filename;
 
+
+/* Prototypes for functions in pr7.3.c */
+void list_options(void);
+int prompt(int argc, char *argv[], int status);
+void eval_options(int argc, char *argv[]);
+int eval_line(char *cmdline);                   /* evaluate a command line */
+int parse(char *buf, char *Argv[]);             /* build the Argv array */
+void shell_msg(const char* function_name, const char* msg);
+
+
+
 /*
  *  MAX_LINE            input line length
  *  MAX_PATH            directory name length
@@ -51,8 +62,8 @@ extern char *s_filename;
  *   sysconf(_SC_CHILD_MAX)
  */
 
-#endif
+#endif /* _POSIX_C_SOURCE */
 
 /*----------------------------------------------------------------------------*/
 
-#endif
+#endif /* PR7_H */
