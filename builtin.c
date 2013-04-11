@@ -221,7 +221,13 @@ void Penv(char *Argv[])
 
 void Senv(char *Argv[])
 {
-  ;
+	// If Argv[1] is NULL, no env. variable was specified, so we do nothing
+	if (!Argv[1])
+	{
+		return;
+	}
+
+	
 }
 
 /*----------------------------------------------------------------------------*/
