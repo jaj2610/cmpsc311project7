@@ -30,6 +30,9 @@ int e_flag = 0;
 int v_flag = 0;
 int d_flag = 0;
 int s_flag = 0;
+pid_t fg_pid = -2;
+pid_t fg_pgid = -2;
+pid_t bg_pgid = -3;
 char *s_filename = "pr7.init";  // default startup file name
 struct process_list *bg_processes;
 
@@ -39,14 +42,14 @@ int main(int argc, char *argv[])
 {
   eval_options(argc, argv);
 
-  bg_processes = process_list_allocate();
-
   int status = EXIT_SUCCESS;
 
   if (v_flag)
   {
     list_options();
   }
+
+  bg_processes = process_list_allocate();
 
   if (s_flag)
   {
@@ -226,6 +229,59 @@ int eval_line(char *cmdline)
   {
     return status;
   }
+
+
+  // NOTE: newchild method
+    // begin forking child process
+    if ((pid = Fork()) < 0)
+    {
+      return 1;
+    }
+
+    // place child process in fg or bg pgid
+    if (pid == 0)
+    {
+      // set fg pgid and fg pid
+      if (!background)
+      {
+        fg_pid = getpid();
+        setpgid(0, 0);
+        fg_pgid = getpgid();
+      }
+      // place child in bg pgid
+      else
+      {
+        // if bg pgid has not been set, set to child's pid
+        if (bg_pgid == -3)
+        {
+          setpgid(0,0);
+          bg_pgid = getpid();
+        }
+        else
+        {
+          setpgid(0, bg_pgid);
+        }
+      }
+
+      if ((status = execvp(Argv[0], Argv)) == -1)
+      {
+        fprintf(stderr, "-%s: execvp() failed: %s\n", prog, strerror(errno));
+        exit(1);
+      }
+    }
+    else
+    {
+      if (!background)
+      {
+        waitpid(-1, &status, 0);
+        return 0;
+      }
+      else
+      {
+        // modify background process list
+        return 0;
+      }
+    }
 
   return status;
 }

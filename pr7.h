@@ -22,6 +22,9 @@ extern int e_flag;
 extern int v_flag;
 extern int d_flag;
 extern int s_flag;
+extern pid_t fg_pid;
+extern pid_t fg_pgid;
+extern pid_t bg_pgid;
 extern char *s_filename;
 extern struct process_list *bg_processes;
 
