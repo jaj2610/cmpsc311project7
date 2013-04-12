@@ -294,22 +294,24 @@ void handler_SIGCHLD(int signum)
 {
   int status;
 
-  /* We received a SIGCHLD signal, so we loop through
-	* the background process list and reap all zombies.
+  /* We received a SIGCHLD signal from a background process,
+  *  so we loop through
+	*  the background process list and reap all zombies.
 	*/
+
   for (pid_t pid = waitpid(-1, &status, WNOHANG);
        pid != 0 && pid != -1;
        pid = waitpid(-1, &status, WNOHANG))
 	{
-    	process_list_pop(bg_processes, pid);
+      if (getpgid(pid) == fg_pgid)
+      {
+        fg_pid = fg_pgid = 0;
+      }
+      else
+      {
+        process_list_pop(bg_processes, pid);
+      }
 	}
-
-  if (errno != ECHILD)
-  {
-	  fprintf(stderr, "\n-%s: waitpid() error: %s\n",
-			  prog, strerror(errno));
-	  errno = 0;
-  }
 
   return;
 }
@@ -318,24 +320,11 @@ void handler_SIGCHLD(int signum)
 
 void handler_SIGINT(int signum)
 {
-	//puts("caught sigint");
-	if (fg_pgid != 0)
-	{
-		if(getpgrp() != fg_pgid)
-		{
-			if ((Kill(-1 * fg_pgid, SIGINT, __func__, __LINE__)) != -1)
-			{
-				//fg_pid = fg_pgid = 0;
-			}
-		}
-		/*else
-		{
-			_exit(0);
-		}*/
-	}
-
-	puts("");	
-	return;
+  //puts("caught sigint");
+  if (fg_pgid != 0)
+  {
+    Kill(-1 * fg_pgid, SIGINT, __func__, __LINE__);
+  }
 }
 
 /*----------------------------------------------------------------------------*/
