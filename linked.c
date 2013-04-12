@@ -73,7 +73,9 @@ void process_list_print(const struct process_list * const list)
       puts("   PID       PGID    STATUS     CMD");
       for (struct node *p = list->head; p != NULL; p = p->next)
 		{ 
-			printf("   [%d]   [%d]     [%s]   %s\n", p->pid, p->pgid, p->status, p->command);; }
+			printf("   [%d]   [%d]   [%s]   %s\n",
+					(int) p->pid, (int) p->pgid, p->status, p->command); 
+		}
     }
 }
 
@@ -120,7 +122,7 @@ void process_list_pop(struct process_list * const list, pid_t pid)
       }
 
       printf("\n--%s: %s (%d) has terminated.\n",
-      prog, p->command, p->pid);
+      	prog, p->command, (int) p->pid);
       free(prev);    // free(NULL) is harmless
       free(p->command);
 

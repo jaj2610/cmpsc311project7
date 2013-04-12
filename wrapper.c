@@ -144,12 +144,12 @@ pid_t Fork(const char *func, const int line)
 		if (d_flag)
 		{
 			fprintf(stderr, "-%s: %s() at line %d: fork() from process %d failed: %s\n",
-				prog, func, line, getpid(), strerror(errno));
+				prog, func, line, (int) getpid(), strerror(errno));
 		}
 		else
 		{
 			fprintf(stderr, "-%s: fork() from process %d failed: %s\n",
-				prog, getpid(), strerror(errno));
+				prog, (int) getpid(), strerror(errno));
 		}
 	}
 
@@ -164,12 +164,12 @@ int Kill(pid_t pid, int sig, const char* func, const int line)
 		if (d_flag) 
 		{
 			fprintf(stderr, "-%s: %s() at line %d: kill(%d, %d) failed: %s\n",
-					prog, func, line, pid, sig, strerror(errno));
+					prog, func, line, (int) pid, sig, strerror(errno));
   		}
 		else 
 		{
 			fprintf(stderr, "-%s: kill(%d, %d) failed: %s\n",
-					prog, pid, sig, strerror(errno));
+					prog, (int) pid, sig, strerror(errno));
 		}
 	}
 			
