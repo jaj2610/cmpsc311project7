@@ -305,10 +305,12 @@ void handler_SIGCHLD(int signum)
 	{
       if (pid == fg_pid)
       {
+			puts("resetting fg's to 0");
         fg_pid = fg_pgid = 0;
       }
       else
       {
+			puts("popping bg process from list");
         process_list_pop(bg_processes, pid);
       }
 	}
@@ -320,7 +322,6 @@ void handler_SIGCHLD(int signum)
 
 void handler_SIGINT(int signum)
 {
-  //puts("caught sigint");
   if (fg_pgid != 0)
   {
     Kill(-1 * fg_pgid, SIGINT, __func__, __LINE__);
