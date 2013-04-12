@@ -325,7 +325,7 @@ void handler_SIGINT(int signum)
 		{
 			if ((Kill(-1 * fg_pgid, SIGINT, __func__, __LINE__)) != -1)
 			{
-				//fg_pid = fg_pgid = 0;
+				fg_pid = fg_pgid = 0;
 			}
 		}
 		/*else
