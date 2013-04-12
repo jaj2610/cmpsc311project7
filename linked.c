@@ -110,7 +110,16 @@ void process_list_pop(struct process_list * const list, pid_t pid)
 	{
 		if (p->pid == pid)
 		{
-			prev->next = p->next;
+      if (prev == NULL)
+      {
+        list->head = NULL;
+      }
+      else
+      {
+  			prev->next = p->next;
+      }
+
+      break;
 		}
     
 		printf("--%s: %s (%d) has terminated.\n",
