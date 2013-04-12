@@ -303,7 +303,7 @@ void handler_SIGCHLD(int signum)
        pid != 0 && pid != -1;
        pid = waitpid(-1, &status, WNOHANG))
 	{
-      if (getpgid(pid) == fg_pgid)
+      if (pid == fg_pid)
       {
         fg_pid = fg_pgid = 0;
       }
