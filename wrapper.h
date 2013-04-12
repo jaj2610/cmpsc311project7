@@ -34,13 +34,16 @@ char *Strdup(const char *s,
 FILE *Fopen(const char * restrict filename, const char * restrict mode,
 	const char *func, const int line);
 
-int Fclose(FILE *stream, const char *func, const int line);
+int Fclose(FILE *stream,
+	const char *func, const int line);
 
 pid_t Fork(const char* func, const int line);
 
-int Kill(pid_t pid, int sig, const char* func, const int line);
+int Kill(pid_t pid, int sig,
+	const char* func, const int line);
 
-sighandler_t Signal(int signum, sighandler_t handler);
+sighandler_t Signal(int signum, sighandler_t handler,
+	const char* func, const int line);
 
 //------------------------------------------------------------------------------
 

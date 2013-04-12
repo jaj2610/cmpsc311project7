@@ -25,6 +25,7 @@
 
 #define MAXARGS 128
 
+char *s_filename = "pr7.init";  // default startup file name
 const char *prog = "pr7";
 int i_flag = 0;
 int e_flag = 0;
@@ -32,22 +33,27 @@ int v_flag = 0;
 int d_flag = 0;
 int s_flag = 0;
 int exec_flag = 0;
-pid_t fg_pid = -2;
-pid_t fg_pgid = -2;
-pid_t bg_pgid = -3;
-char *s_filename = "pr7.init";  // default startup file name
+
+pid_t shell_pid = 0;
+pid_t fg_pid = 0;
+pid_t fg_pgid = 0;
+pid_t bg_pgid = 0;
+
+
 struct process_list *bg_processes;
 
 /*----------------------------------------------------------------------------*/
 
 int main(int argc, char *argv[])
 {
+  shell_pid = getpid();
+
   eval_options(argc, argv);
 
   // install signal handlers
-  Signal(SIGCHLD, sig_chld);
-  // Signal(SIGINT, sig_int);
-  Signal(SIGSTOP, sig_stp);
+  Signal(SIGCHLD, handler_SIGCHLD, __func__, __LINE__);
+  Signal(SIGINT, handler_SIGINT, __func__, __LINE__);
+  Signal(SIGTSTP, handler_SIGTSTP, __func__, __LINE__);
 
   int status = EXIT_SUCCESS;
 
@@ -100,32 +106,6 @@ void verbose_greeting(void)
 {
 	printf("-%s: Hello, %s!\n", prog, getenv("USER"));
 	Options();
-/*
-  if (i_flag)
-  {
-    puts("  [-i] interactive prompt");
-  }
-
-  if (e_flag)
-  {
-    puts("  [-e] echo commands before execution");
-  }
-
-  if (v_flag)
-  {
-    puts("  [-v] verbose output");
-  }
-
-  if (d_flag)
-  {
-    puts(" [-d] debug output");
-  }
-
-  if (s_flag)
-  {
-    printf("  [-s]  startup file %s\n", s_filename);
-  }
-  */
 }
 
 /*----------------------------------------------------------------------------*/
@@ -180,8 +160,7 @@ void eval_options(int argc, char *argv[])
         d_flag = 1;
         break;
       case 'V':
-        v_flag = 1;
-        d_flag = 1;
+        v_flag = 1; d_flag = 1;
         break;
       case 's':
         s_flag++;
@@ -303,9 +282,7 @@ int parse(char *buf, char *Argv[])
 
 /* Prints an error message
  * format is:
- * 	-[program name]: [command name]: [msg1]: [msg2]
- *
- * Warning: WILL FAIL if function_name and/or msg1 are NULL.
+ * 	-[program name]: [command name]: [msg1]
  */
 void shell_msg(const char* function_name, const char* msg)
 {
@@ -314,18 +291,25 @@ void shell_msg(const char* function_name, const char* msg)
 
 /*----------------------------------------------------------------------------*/
 
-void sig_chld(int signum)
+void handler_SIGCHLD(int signum)
 {
   int status;
 
-  /* We received a SIGCHLD signal, so we loop through the background process
-	* list and reap all zombies.
+  /* We received a SIGCHLD signal, so we loop through
+	* the background process list and reap all zombies.
 	*/
   for (pid_t pid = waitpid(-1, &status, WNOHANG);
        pid != 0 && pid != -1;
        pid = waitpid(-1, &status, WNOHANG))
+	{
+    	process_list_pop(bg_processes, pid);
+	}
+
+  if (errno != ECHILD)
   {
-    process_list_pop(bg_processes, pid); // this will print message saying removed
+	  fprintf(stderr, "-%s: waitpid() error: %s",
+			  prog, strerror(errno));
+	  errno = 0;
   }
 
   return;
@@ -333,37 +317,24 @@ void sig_chld(int signum)
 
 /*----------------------------------------------------------------------------*/
 
-void sig_int(int signum)
+void handler_SIGINT(int signum)
 {
-  int status;
-
-  // if within fg process
-  if (fg_pid == 0)
-  {
-    ; // ignore SIGINT
-  }
-  // terminate fg process group
-  else
-  {
-    Kill(fg_pid, signum, __func__, __LINE__);
-  }
-  
-
-  // How to terminate fg process group?
-  
-
-  return;
+	puts("caught sigint");
+	
+	Kill(-1 * fg_pgid, SIGINT, __func__, __LINE__);
+	return;
 }
 
 /*----------------------------------------------------------------------------*/
 
-void sig_stp(int signum)
+void handler_SIGTSTP(int signum)
 {
-  int status;
+	//int status;
+	
 
-  // Stop fg process group
+	// Stop fg process group
 
-  return;
+	return;
 }
 
 /*----------------------------------------------------------------------------*/

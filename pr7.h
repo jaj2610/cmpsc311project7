@@ -24,6 +24,7 @@
 
 
 /* Global Variables */
+extern char *s_filename;
 extern const char *prog;
 extern int i_flag;
 extern int e_flag;
@@ -31,10 +32,12 @@ extern int v_flag;
 extern int d_flag;
 extern int s_flag;
 extern int exec_flag;	// 0 for vp, 1 for ve, 2 for lp
+
+extern pid_t shell_pid;
 extern pid_t fg_pid;
 extern pid_t fg_pgid;
 extern pid_t bg_pgid;
-extern char *s_filename;
+
 extern struct process_list *bg_processes;
 
 extern char **environ;
@@ -75,10 +78,10 @@ int parse(char *buf, char *Argv[]);
 
 void shell_msg(const char* function_name, const char* msg);
 
-// Still needs work
-void sig_chld(int signum);
-void sig_int(int signum);
-void sig_stp(int signum);
+/* THESE STILL NEED A LOT OF WORK */
+void handler_SIGCHLD(int signum);
+void handler_SIGINT(int signum);
+void handler_SIGTSTP(int signum);
 
 
 /*----------------------------------------------------------------------------*/

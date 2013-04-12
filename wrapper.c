@@ -159,8 +159,7 @@ pid_t Fork(const char *func, const int line)
 int Kill(pid_t pid, int sig, const char* func, const int line)
 {
 	int response;
-	response = kill(pid, sig);
-	if (response == -1)
+	if ((response = kill(pid, sig)) == -1)
 	{
 		if (d_flag) 
 		{
@@ -177,19 +176,26 @@ int Kill(pid_t pid, int sig, const char* func, const int line)
 	return response;
 }
 
-sighandler_t Signal(int signum, sighandler_t handler)
+sighandler_t Signal(int signum, sighandler_t handler, 
+		const char *func, const int line)
 {
-  sighandler_t response;
+	sighandler_t response;
 
-  response = signal(signum, handler);
+	if ((response = signal(signum, handler)) == SIG_ERR)
+	{
+		if (d_flag)
+		{
+			fprintf(stderr, "-%s: %s() at line %d: signal(%d, handler) failed: %s\n",
+				prog, func, line, signum, strerror(errno));
+		}
+		else
+		{
+			fprintf(stderr, "-%s: signal(%d, handler) failed: %s\n",
+				prog, signum, strerror(errno));
+		}
+	}
 
-  if (response == SIG_ERR)
-  {
-    fprintf(stderr, "-%s: signal(%d, handler) failed: %s\n",
-			 prog, signum, strerror(errno));
-  }
-
-  return response;
+	return response;
 }
 
 //------------------------------------------------------------------------------

@@ -29,63 +29,66 @@
 
 int new_child(char *Argv[], int background, int status)
 {
-  pid_t pid;            /* process id */
+  pid_t pid;
 
-  // begin forking child process
   if ((pid = Fork(__func__, __LINE__)) == (pid_t) -1)
   {
-    return 1;
+    return 1;	// fork() failed, return to prompt
   }
 
-  // place child process foreground or background
+  /* If we're in the child process,
+	* we need to place it in the appropriate process group
+	*/
   if (pid == 0)
   {
-    // set fg pgid and fg pid
+	 /* foreground process */
     if (!background)
     {
-      fg_pid = getpid();
-      setpgid(0, 0);
-      fg_pgid = fg_pid;
+      fg_pid = getpid();		// set the global foreground PID to child's PID
+      setpgid(0, 0);				// create new process group for child
+      fg_pgid = getpgrp();		// set global foreground GPID to child's PID
     }
-    // place child in bg pgid
-    else
+	 /* background process */
+	 else
     {
-      // if bg pgid has not been set, set to child's pid
-      if (bg_pgid == -3)
+      // if bg_pgid has not been set, set it to the child's pid
+      if (bg_pgid == 0)
       {
         setpgid(0,0);
-        bg_pgid = getpid();
+        bg_pgid = getpgrp();
       }
       else
       {
-        setpgid(0, bg_pgid);
+        setpgid(0, bg_pgid);	// add the child to the background PID group
+      }
+
+      // modify background process list
+      process_list_append(bg_processes, Argv[0], getpid(), bg_pgid);
+
+      if (v_flag)
+      {
+        fprintf(stderr, "-%s: %s added to background process list.\n",
+        		prog, Argv[0]);
       }
     }
 
     exec(Argv, status);
   }
-  else
-  {
-    // deal with fg process
-    if (!background)
-    {
-      waitpid(-1, &status, 0);
-      return 0;
-    }
-    else
-    {
-      // modify background process list
-      process_list_append(bg_processes, Argv[0], pid, bg_pgid);
+  /* If we're in the parent process, we either:
+	* 	wait (foreground process)
+	* 	return to shell (background process)
+	*/
 
-      if (v_flag)
-      {
-        fprintf(stderr, "%s successfully added to background process list.\n",
-        Argv[0]);
-      }
-
-      return 0;
-    }
-  }
+	/* Parent forked a foreground process */
+	if (!background)
+   {
+     waitpid(-1, &status, 0);
+     return 0;
+   }
+	else
+	{
+		return 0;
+	}
 
   return status;
 }
@@ -98,7 +101,7 @@ void exec(char *Argv[], int status)
     if ((status = execvp(Argv[0], Argv)) == -1)
     {
       fprintf(stderr, "-%s: execvp() failed: %s\n", prog, strerror(errno));
-      exit(1);
+      _exit(EXIT_FAILURE);
     }
   }
 
