@@ -96,7 +96,6 @@ void Set(char *Argv[]);
 /* Secho() toggles exec type (vp,ve,lp) */
 void Sexec(char *Argv[]);
 
-#if 0
 /* Secho() toggles echo on or off */
 void Secho(char *Argv[]);
 
@@ -105,6 +104,5 @@ void Sverbose(char *Argv[]);
 
 /* Secho() toggles debug on or off */
 void Sdebug(char *Argv[]);
-#endif
 
 #endif /* BUILTIN_H */

@@ -531,27 +531,28 @@ void Print_Options()
 
 void Set(char *Argv[])
 {
-	if (!strcmp(Argv[1], "exec")) {
-		Sexec(Argv);
-		return;
+	if (Argv[1] == NULL)
+	{
+		fprintf(stderr, "-%s: set format:\n", prog);
+		fprintf(stderr, "-%s:    set [echo|verbose|debug] [on|off]\n", prog);
+		fprintf(stderr, "-%s:    set [exec] [vp|ve|lp]\n", prog);
 	}
-
-	fprintf(stderr, "-%s: error: don't know how to set %s\n", prog, Argv[1]);
-
-	/*
-	if (!strcmp(Argv[1], "echo")) {
+	else if (!strcmp(Argv[1], "exec")) {
+		Sexec(Argv);
+	}
+	else if (!strcmp(Argv[1], "echo")) {
 		Secho(Argv);
 	}
-
-
-	if (!strcmp(Argv[1], "verbose")) {
+	else if (!strcmp(Argv[1], "verbose")) {
 		Sverbose(Argv);
 	}
-
-	if (!strcmp(Argv[1], "debug")) {
+	else if (!strcmp(Argv[1], "debug")) {
 		Sdebug(Argv);
 	}
-	*/
+	else
+	{
+		fprintf(stderr, "-%s: error: don't know how to set %s\n", prog, Argv[1]);
+	}
 }
 
 /*----------------------------------------------------------------------------*/
@@ -580,7 +581,6 @@ void Sexec(char *Argv[])
 
 /*----------------------------------------------------------------------------*/
 
-#if 0
 
 void Secho(char *Argv[])
 {
@@ -636,5 +636,3 @@ void Sdebug(char *Argv[])
 				prog, Argv[2]);
 	}
 }
-
-#endif
