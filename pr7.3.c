@@ -319,9 +319,15 @@ void handler_SIGCHLD(int signum)
 
 void handler_SIGINT(int signum)
 {
-	puts("caught sigint");
+	//puts("caught sigint");
+	if (fg_pgid != 0 && getpid() == shell_pid)
+	{
+		if ((Kill(-1 * fg_pgid, SIGKILL, __func__, __LINE__)) != -1)
+		{
+			fg_pgid = 0;
+		}
+	}
 	
-	Kill(-1 * fg_pgid, SIGINT, __func__, __LINE__);
 	return;
 }
 
