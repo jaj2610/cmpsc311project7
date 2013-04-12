@@ -41,6 +41,7 @@ int new_child(char *Argv[], int background, int status)
 	 */
 	if (pid == 0)
 	{
+		Signal(SIGINT, SIG_DFL, __func__, __LINE__);
 		exec(Argv, status);
 	}
 
