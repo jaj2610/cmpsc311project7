@@ -22,7 +22,7 @@ pr7-sun-gcc : $(INC) $(LIB)
 	gcc -std=c99 -Wall -Wextra -pedantic -D_POSIX_C_SOURCE=200112L -D_XOPEN_SOURCE=600 -o pr7 $(INC) $(LIB)
 
 pr7-linux : $(INC) $(LIB)
-	gcc -std:c99 -Wall -Wextra -pedantic -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -o pr7 $(INC) $(LIB)
+	gcc -std=c99 -Wall -Wextra -pedantic -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -o pr7 $(INC) $(LIB)
 
 clean :
 	rm -f pr7 a.out *.o

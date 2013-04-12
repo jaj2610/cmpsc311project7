@@ -102,12 +102,20 @@ void exec(char *Argv[], int status)
   // use execve
   if (exec_flag == 1)
   {
-    ;
+    if ((status = execve(filename, Argv, environ) == -1)
+    {
+      fprintf(stderr, "-%s: execve() failed: %s\n", prog, strerror(errno));
+      _exit(EXIT_FAILURE);
+    }
   }
 
   // use execlp
   if (exec_flag == 2)
   {
-    ;
+    if ((status = execlp(Argv[0], Argv)) == -1)
+    {
+      fprintf(stderr, "-%s: execlp() failed: %s\n", prog, strerror(errno));
+      _exit(EXIT_FAILURE);
+    }
   }
 }
