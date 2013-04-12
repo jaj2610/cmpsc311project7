@@ -108,25 +108,25 @@ void process_list_pop(struct process_list * const list, pid_t pid)
 
 	for (struct node *p = list->head; p != NULL; p = p->next)
 	{
-		if (p->pid == pid)
-		{
+    if (p->pid == pid)
+    {
       if (prev == NULL)
       {
-        list->head = NULL;
+        list->head = p->next;
       }
       else
       {
-  			prev->next = p->next;
+        prev->next = p->next;
       }
 
+      printf("--%s: %s (%d) has terminated.\n",
+      prog, p->command, p->pid);
+      free(prev);    // free(NULL) is harmless
+      free(p->command);
+
       break;
-		}
-    
-		printf("--%s: %s (%d) has terminated.\n",
-				prog, p->command, p->pid);
-    
-		free(prev); 		// free(NULL) is harmless
-		free(p->command);
+    }
+
 		prev = p;
 	}
 }
