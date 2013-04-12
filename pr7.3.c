@@ -307,7 +307,7 @@ void handler_SIGCHLD(int signum)
 
   if (errno != ECHILD)
   {
-	  fprintf(stderr, "-%s: waitpid() error: %s",
+	  fprintf(stderr, "\n-%s: waitpid() error: %s\n",
 			  prog, strerror(errno));
 	  errno = 0;
   }
@@ -327,7 +327,8 @@ void handler_SIGINT(int signum)
 			fg_pgid = 0;
 		}
 	}
-	
+
+	puts("");	
 	return;
 }
 

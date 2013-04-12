@@ -119,7 +119,7 @@ void process_list_pop(struct process_list * const list, pid_t pid)
         prev->next = p->next;
       }
 
-      printf("--%s: %s (%d) has terminated.\n",
+      printf("\n--%s: %s (%d) has terminated.\n",
       prog, p->command, p->pid);
       free(prev);    // free(NULL) is harmless
       free(p->command);

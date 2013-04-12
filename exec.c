@@ -44,7 +44,6 @@ int new_child(char *Argv[], int background, int status)
 		exec(Argv, status);
 	}
 
-
 	/* We're in the parent process, we either:
 	 * 	wait (foreground process)
 	 * 	return to shell (background process)
@@ -67,16 +66,16 @@ int new_child(char *Argv[], int background, int status)
 		// if bg_pgid has not been set, set it to the child's pid
 		if (bg_pgid == 0)
 		{
-			setpgid(0,0);
-			bg_pgid = getpgrp();
+			setpgid(pid, pid);
+			bg_pgid = getpgid(pid);
 		}
 		else
 		{
-			setpgid(0, bg_pgid);	// add the child to the background PID group
+			setpgid(pid, bg_pgid);	// add the child to the background PID group
 		}
 
 		// modify background process list
-		process_list_append(bg_processes, Argv[0], getpid(), bg_pgid);
+		process_list_append(bg_processes, Argv[0], pid, getpgid(pid));
 
 		if (v_flag)
 		{
