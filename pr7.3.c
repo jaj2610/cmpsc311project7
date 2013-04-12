@@ -53,7 +53,6 @@ int main(int argc, char *argv[])
   // install signal handlers
   Signal(SIGCHLD, handler_SIGCHLD, __func__, __LINE__);
   Signal(SIGINT, handler_SIGINT, __func__, __LINE__);
-  Signal(SIGTSTP, handler_SIGTSTP, __func__, __LINE__);
 
   int status = EXIT_SUCCESS;
 
@@ -320,12 +319,19 @@ void handler_SIGCHLD(int signum)
 void handler_SIGINT(int signum)
 {
 	//puts("caught sigint");
-	if (fg_pgid != 0 && getpid() == shell_pid)
+	if (fg_pgid != 0)
 	{
-		if ((Kill(-1 * fg_pgid, SIGKILL, __func__, __LINE__)) != -1)
+		if(getpgrp() != fg_pgid)
 		{
-			fg_pgid = 0;
+			if ((Kill(-1 * fg_pgid, SIGINT, __func__, __LINE__)) != -1)
+			{
+				//fg_pid = fg_pgid = 0;
+			}
 		}
+		/*else
+		{
+			_exit(0);
+		}*/
 	}
 
 	puts("");	
