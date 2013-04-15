@@ -1,0 +1,8 @@
+echo Test case 5:
+whoami
+date
+pwd
+big -a -x 3
+echo foo bar
+cat something
+exit

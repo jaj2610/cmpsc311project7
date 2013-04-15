@@ -1,1 +1,10 @@
-echo This is the first command in testfile1
+echo Test case 1:
+dir
+cdir /nonexistant
+dir
+cdir
+dir
+cdir /
+dir
+pwd
+quit

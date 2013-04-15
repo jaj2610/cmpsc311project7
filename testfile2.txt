@@ -1,0 +1,10 @@
+echo Test case 2:
+penv USER
+penv SHELL
+senv programmer1 = Scott
+senv programmer2 = Jake
+penv programmer1
+penv programmer2
+unsenv programmer1
+penv programmer1
+penv

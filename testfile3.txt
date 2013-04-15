@@ -1,0 +1,17 @@
+echo Test case 3:
+toggle e
+toggle v
+toggle d
+toggle i
+toggle
+set echo on
+set echo off
+set verbose on
+set verbose off
+set debug on
+set debug off
+set
+set exec ve
+set exec lp
+set exec vp
+set debug OFF
