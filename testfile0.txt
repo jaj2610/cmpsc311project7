@@ -1,0 +1,2 @@
+echo Test case 0:
+help
