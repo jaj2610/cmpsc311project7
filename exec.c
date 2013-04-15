@@ -136,7 +136,7 @@ void exec(char *Argv[], int status)
 	// use execlp()
 	if (exec_flag == 2)
 	{
-		if ((status = execlp(prog, Argv[0], Argv)) == -1)
+		if ((status = execlp(Argv[0], Argv)) == -1)
 		{
 			fprintf(stderr, "-%s: execlp() failed: %s\n", prog, strerror(errno));
 			_exit(EXIT_FAILURE);
