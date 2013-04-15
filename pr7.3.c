@@ -82,14 +82,14 @@ static void usage(int status)
 {
   if (status == EXIT_SUCCESS)
   {
-    printf("usage: %s [-h] [-e] [-v] [-d] [-V] [-s f]\n", prog);
-    printf("  -h           print help\n");
-    printf("  -i           interactive mode\n");
-    printf("  -e           echo commands before execution\n");
-    printf("  -v           verbose mode; enable extra printing; can be repeated\n");
-    printf("  -d           debug information for memory allocation\n");
-    printf("  -V           enables verbose and debug modes\n");
-    printf("  -s f         use startup file f, default is pr7.init\n");
+    puts("usage: %s [-h] [-e] [-v] [-d] [-V] [-s f]\n", prog);
+    puts("  -h           print help\n");
+    puts("  -i           interactive mode\n");
+    puts("  -e           echo commands before execution\n");
+    puts("  -v           verbose mode; enable extra printing; can be repeated\n");
+    puts("  -d           debug information for memory allocation\n");
+    puts("  -V           enables verbose and debug modes\n");
+    puts("  -s f         use startup file f, default is pr7.init\n");
   }
   else
   {
