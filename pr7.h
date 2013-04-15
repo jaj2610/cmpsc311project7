@@ -81,7 +81,7 @@ void print_prompt(int newline);
  */
 int prompt(int status);
 
-int read_input(void);
+int read_input(int argc, char *argv[]);
 
 /* Function containing a getopt() loop for
  * processing command line arguments

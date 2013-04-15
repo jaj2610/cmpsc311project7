@@ -51,29 +51,29 @@ struct process_list *bg_processes;
 
 int main(int argc, char *argv[])
 {
-  shell_pid = getpid();
+	shell_pid = getpid();
 
-  eval_options(argc, argv);
+	eval_options(argc, argv);
 
-  /* install non-default signal handlers for shell */
-  Signal(SIGCHLD, handler_SIGCHLD, __func__, __LINE__);
-  Signal(SIGINT, handler_SIGINT, __func__, __LINE__);
+	/* install non-default signal handlers for shell */
+	Signal(SIGCHLD, handler_SIGCHLD, __func__, __LINE__);
+	Signal(SIGINT, handler_SIGINT, __func__, __LINE__);
 
-  int status = EXIT_SUCCESS;
+	int status = EXIT_SUCCESS;
 
-  /* Say hello */
-  if (v_flag)
-  {
-    verbose_greeting();
-  }
+	/* Say hello */
+	if (v_flag)
+	{
+		verbose_greeting();
+	}
 
-  bg_processes = process_list_allocate();
+	bg_processes = process_list_allocate();
 
 	read_startup_file((bool) !s_flag);
 
-  status = read_input();
+	status = read_input(argc, argv);
 
-  return status;
+	return status;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -175,7 +175,7 @@ int prompt(int status)
   return status;
 }
 
-int read_input(void)
+int read_input(int argc, char *argv[])
 {
   FILE *infile;
   char *infile_name; 
@@ -194,7 +194,7 @@ int read_input(void)
     }
   }
 
-  char *cmdline[MAX_LINE];
+  char cmdline[MAX_LINE];
 
   if (i_flag)
   {
