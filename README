@@ -6,32 +6,28 @@ Email:	jaj5333@psu.edu
 Author:	Scott Cheloha
 Email:	ssc5145@psu.edu
 
-Well, this was somewhat of a nightmare.
 
-Getting our code to cooperate was bad, and getting it to compile/run without errors on the lab machines in IST 218 was even worse.
+Time Allotment:
+	~10 hours reading textbooks
+	~15 hours creating base shell
+	~15 hours implementing exec features, etc
+	~5 hours extra credit work added
 
-Eventually, we gave up on the lab machines and compiled/ran/tested on Mac OSX 10.8.2|3.
+NOTE: We compiled and tested for Mac OS X 10.8.2|3
 
+Builtin functions work as expected.
+Command file execution works as expected.
+Shell never fails.  There are small bugs when mixing foreground and background Sleep(1).
+Background command execution works as expected.
+Background job control works as expected.
+Signal handling under non OS X systems is flawed.
+Execlp is not perfect.
+kill background function implemented.
+limits function implemented.
+toggle implemented for e,v,d.
+set implemented for echo,verbose,debug,exec.
 
+If we were to do this project again, we would explicitly restart slow system calls after SIGINT interuption.  OS X, being BSD based, does this automatically, but systems like Solaris and various Linux systems do not.
 
-NOTE:
-	We didn't compile or test on other systems because other systems broke our signal handlers (all of which worked fine in OS X) and killed the shell on SIGINT after some persistance. We figured it'd be better to have a compliant shell on one system than to tear our hair out debugging and not implement other essential features due to lack of time.
-
-I'd say we spent around 10 hours reading the textbook and man pages before starting, and around 20-50 hours in the lab. I give a huge range because much of the time was late at night where one could argue that very little is accomplished and much is broken with best intentions.
-
-If you want rough percentages:
-	50% reading, 10% coding, %40 debugging/testing.
-
-All of the builtin commands work flawlessly, save the 'set exec' function, which we never fully implemented.
-
-Our signal handlers are somewhat hackish, but they do work on OS X. Without a foreground process, SIGINT is caught and ignored. With a foreground process, SIGINT is sent to the processes in the global foreground process group. When processes terminate, SIGCHLD is caught by the shell. If there is a foreground process, the prompt is reprinted. If the process was in the background, a success message is printed before the prompt reprint.
-
-We never implemented "pr7 filename", though pr7 will take input from stdin if -s - is specified from the command line. That said, we do make attempts to prevent recursive error by simply ignoring pr7 when issued from pr7. To reiterate: you cannot run pr7 from within pr7. We found the recursion got too buggy and that the system tended to hang after the third or fourth level, so we opted to block it completely. On some systems, you can circumvent this by running "./pr7" from pr7, but specifications-wise this shouldn't matter.
-
-The command line options work as expected.
-
-
-
-If we were to do it again, we'd have definitely started out working together, rather than trying to merge incompatible code and winding up rewriting most of the project anyway.
-
-We'd also have spent more time playing with signal handlers, as those were the block to much of our efforts to design and write an elegant pseudo-shell.
+Thanks for the leniency on the deadline.  It made a huge difference in the quality of the final submission.
+(To restate our reasons for needing extra time: Jake's original partner dropped the course, and we were forced to merge our incompatible code)
