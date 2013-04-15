@@ -38,9 +38,6 @@ struct process_list
 /* process_list_allocate() allocates a new process_list */
 struct process_list *process_list_allocate(void);
 
-/* process_list_reference() keeps track of times process_list is referenced */
-struct process_list *process_list_reference(struct process_list * const list);
-
 /* process_list_deallocate() deallocates a process_list completely */
 void process_list_deallocate(struct process_list * const list);
 

@@ -110,4 +110,9 @@ void Sdebug(char *Argv[]);
  */
 void Limits(void);
 
+/* forcibly kill a background process
+ * optional extra credit in project 7 specs.
+ */
+void pr7_Kill(void);
+
 #endif /* BUILTIN_H */

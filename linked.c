@@ -35,15 +35,6 @@ struct process_list *process_list_allocate(void)
 
 //------------------------------------------------------------------------------
 
-struct process_list *process_list_reference(struct process_list * const list)
-{
-  list->reference_count++;
-
-  return list;
-}
-
-//------------------------------------------------------------------------------
-
 void process_list_deallocate(struct process_list * const list)
 {
   if (--list->reference_count > 0)
@@ -134,4 +125,6 @@ void process_list_pop(struct process_list * const list, pid_t pid)
 
 		prev = p;
 	}
+
+  fprintf(stderr, "--%s: process %d is not currently running.\n", prog, (int) pid);
 }
