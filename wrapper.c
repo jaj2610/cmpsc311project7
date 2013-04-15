@@ -87,12 +87,14 @@ FILE *Fopen(const char * restrict filename, const char * restrict mode,
       fprintf(stderr, "-%s: %s() at line %d failed: fopen(%s): %s\n",
 	prog, func, line, filename, strerror(errno));
   }
-
-  if (d_flag)
-  {
-	  fprintf(stderr, "-%s: %s() at line %d succeeded: Fopen() opened file %s\n",
-			  prog, func, line, filename);
-  }
+	else
+	{
+  		if (d_flag)
+  		{
+	  		fprintf(stderr, "-%s: %s() at line %d succeeded: Fopen() opened file %s\n",
+			  	prog, func, line, filename);
+  		}
+}
 
   return f;
 }

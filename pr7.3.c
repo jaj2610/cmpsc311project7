@@ -71,6 +71,12 @@ int main(int argc, char *argv[])
 
 	read_startup_file((bool) !s_flag);
 
+	/* Can't continue unless interactivity or a command file are specified */
+	if (argc == 1)
+	{
+		usage(EXIT_FAILURE);
+	}
+
 	status = read_input(argc, argv);
 
 	return status;
@@ -78,18 +84,19 @@ int main(int argc, char *argv[])
 
 /*----------------------------------------------------------------------------*/
 
-static void usage(int status)
+void usage(int status)
 {
   if (status == EXIT_SUCCESS)
   {
-    printf("usage: %s [-h] [-e] [-v] [-d] [-V] [-s f]\n", prog);
-    printf("  -h           print help\n");
-    printf("  -i           interactive mode\n");
-    printf("  -e           echo commands before execution\n");
-    printf("  -v           verbose mode; enable extra printing; can be repeated\n");
-    printf("  -d           debug information for memory allocation\n");
-    printf("  -V           enables verbose and debug modes\n");
-    printf("  -s f         use startup file f, default is pr7.init\n");
+    printf("usage: %s [-h] [-e] [-v] [-d] [-V] [-s sfile] [command file]\n", prog);
+    puts("  -h           print help");
+    puts("  -i           interactive mode");
+    puts("  -e           echo commands before execution");
+    puts("  -v           verbose mode; enable extra printing; can be repeated");
+    puts("  -d           debug information for memory allocation");
+    puts("  -V           enables verbose and debug modes");
+    puts("  -s sfile     use sfile as startup file, default is pr7.init");
+	 puts("\nNOTE: Use -i OR specify a command file for input");    
   }
   else
   {
@@ -155,6 +162,8 @@ void print_prompt(int newline)
 	return;
 }
 
+/*----------------------------------------------------------------------------*/
+
 int prompt(int status)
 {
   char cmdline[MAX_LINE];                /* command line */
@@ -175,6 +184,8 @@ int prompt(int status)
   return status;
 }
 
+/*----------------------------------------------------------------------------*/
+
 int read_input(int argc, char *argv[])
 {
   FILE *infile;
@@ -190,7 +201,10 @@ int read_input(int argc, char *argv[])
     infile_name = argv[argc-1];  /* also use strdup()?...no */
     if ((infile = Fopen(infile_name, "r", __func__, __LINE__)) == NULL)
     {
-      exit(EXIT_FAILURE);  // brutally fail
+	 	 printf("-%s: shell failed to read command file: ensure file '%s' exists\n",
+			 prog, argv[argc-1]);
+
+		exit(EXIT_FAILURE);  // brutally fail
     }
   }
 
@@ -222,7 +236,7 @@ int read_input(int argc, char *argv[])
 
   if (ferror(infile))
   {
-    printf("--%s: error reading input: %s\n", prog, strerror(errno));
+    printf("-%s: error reading input: %s\n", prog, strerror(errno));
   }
 
   return status;

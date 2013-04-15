@@ -52,6 +52,8 @@ extern char **environ;
 
 /* Prototypes for functions in pr7.3.c */
 
+/* Prints information for using the shell */
+void usage(int status);
 
 /* Starts the prompt with a greeting and lists
  * the command line options set.

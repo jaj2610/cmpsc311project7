@@ -203,8 +203,8 @@ void Cdir(char *Argv[])
 
 	if (v_flag)
 	{
-		fprintf(stderr, "-%s: %s: changing working directory to %s\n",
-				prog, "cdir", target_dir);
+		fprintf(stderr, "-%s: changing working directory to %s\n",
+				"cdir", target_dir);
 	}	
 
 	// Check that the directory is not NULL
