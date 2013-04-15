@@ -162,7 +162,8 @@ pid_t Fork(const char *func, const int line)
 	return pid;
 }
 
-int Kill(pid_t pid, int sig, const char* func, const int line)
+int Kill(pid_t pid, int sig, bool quiet,
+		const char* func, const int line)
 {
 	int response;
 	if ((response = kill(pid, sig)) == -1)
@@ -172,7 +173,7 @@ int Kill(pid_t pid, int sig, const char* func, const int line)
 			fprintf(stderr, "-%s: %s() at line %d: kill(%d, %d) failed: %s\n",
 					prog, func, line, (int) pid, sig, strerror(errno));
   		}
-		else 
+		else if (!quiet)
 		{
 			fprintf(stderr, "-%s: kill(%d, %d) failed: %s\n",
 					prog, (int) pid, sig, strerror(errno));

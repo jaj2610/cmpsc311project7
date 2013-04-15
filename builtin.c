@@ -678,9 +678,12 @@ void pr7_Kill(char *Argv[])
 {
 	if (Argv[1])
 	{
-		if (Kill((unsigned int) Argv[1], SIGKILL, __func__, __LINE__) != -1)
+		unsigned int pid_to_kill = (unsigned int) strtoul(Argv[1], NULL, 10);
+
+		if (Kill(pid_to_kill, SIGKILL, 1, __func__, __LINE__) == -1)
 		{
-			process_list_pop(bg_processes, (unsigned int) Argv[1]);
+			fprintf(stderr, "-%s: error: can't kill PID %d: %s\n", 
+					Argv[0], pid_to_kill, strerror(errno)); 
 		}
 		
 	}

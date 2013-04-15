@@ -425,7 +425,7 @@ void handler_SIGINT(int signum)
 	// every process in the group
 	if (fg_pgid != 0)
 	{
-		Kill(-1 * fg_pgid, signum, __func__, __LINE__);
+		Kill(-1 * fg_pgid, signum, 0, __func__, __LINE__);
 		puts("");
 	}
 	// if the fg process group does not exist,

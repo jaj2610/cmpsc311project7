@@ -11,6 +11,7 @@
 #define WRAPPER_H
 
 #include <stdio.h>
+#include <stdbool.h>
 #include <sys/types.h>
 #include <signal.h>
 
@@ -40,7 +41,7 @@ int Fclose(FILE *stream,
 
 pid_t Fork(const char* func, const int line);
 
-int Kill(pid_t pid, int sig,
+int Kill(pid_t pid, int sig, bool quiet,
 	const char* func, const int line);
 
 sighandler_t Signal(int signum, sighandler_t handler,
