@@ -47,6 +47,9 @@ int Builtin(char *Argv[])
 {
 	errno = 0; // reset errno 
 
+	if (!strcmp(Argv[0], "pr7")) {
+		return 1;
+	}
 	/* quit command */
 	if (!strcmp(Argv[0], "quit")) { 
 		Quit(); return 1;
@@ -421,11 +424,11 @@ void Toggle(char *Argv[])
 	{
 		if (e_flag)
 		{
-			e_flag--;
+			e_flag = 0;
 		}
 		else
 		{
-			e_flag++;
+			e_flag = 1;
 		}
 
 		printf("-%s: echo mode is now ", prog);
@@ -445,11 +448,11 @@ void Toggle(char *Argv[])
 	{
 		if (v_flag)
 		{
-			v_flag--;
+			v_flag = 0;
 		}
 		else
 		{
-			v_flag++;
+			v_flag = 1;
 		}
 
 		printf("-%s: verbose output is now ", prog);
@@ -469,11 +472,11 @@ void Toggle(char *Argv[])
 	{
 		if (d_flag)
 		{
-			d_flag--;
+			d_flag = 0;
 		}
 		else
 		{
-			d_flag++;
+			d_flag = 1;
 		}
 
 		printf("-%s: debug output is now ", prog);
@@ -489,7 +492,9 @@ void Toggle(char *Argv[])
 		return;
 	}
 
-	fprintf(stderr, "-%s: error: don't know how to toggle %s\n", prog, Argv[1]);
+	fprintf(stderr, "-%s: error: don't know how to toggle %s\n" \
+						 "-%s: try 'toggle [d|e|v]'\n",
+						 prog, Argv[1], prog);
 }
 
 void Options(void)
@@ -522,7 +527,7 @@ void Print_Options()
 
   if (s_flag)
   {
-    printf("   [-s]  startup file %s\n", s_filename);
+    printf("   [-s] alternate startup file %s\n", s_filename);
   }
 
 }
@@ -573,7 +578,7 @@ void Sexec(char *Argv[])
 
 	if (v_flag)
 	{
-		fprintf(stderr, "-%s: set: successfully set exec mode %s\n",
+		fprintf(stderr, "-%s: set: set exec mode %s\n",
 				prog, Argv[2]);
 	}
 }

@@ -47,13 +47,13 @@ void *Malloc(size_t size, const char *func, const int line)
   void *p = malloc(size);
   if (p == NULL)
     {
-      fprintf(stderr, "%s: %s() at line %d failed: malloc(): %s\n",
+      fprintf(stderr, "-%s: %s() at line %d failed: malloc(): %s\n",
 	prog, func, line, strerror(errno));
     }
 
   if (d_flag)
     { // which address?
-      fprintf(stderr, "%s: malloc(%zd) at %p from %s line %d\n",
+      fprintf(stderr, "-%s: malloc(%zd) at %p from %s line %d\n",
 	prog, size, p, func, line);
     }
 
@@ -65,13 +65,13 @@ char *Strdup(const char *s, const char *func, const int line)
   char *p = strdup(s);
   if (p == NULL)
     {
-      fprintf(stderr, "%s: %s() at line %d failed: strdup(): %s\n",
+      fprintf(stderr, "-%s: %s() at line %d failed: strdup(): %s\n",
 	prog, func, line, strerror(errno));
     }
 
   if (d_flag)
   { // which address?
-      fprintf(stderr, "%s: strdup(%zd) at %p from %s line %d\n",
+      fprintf(stderr, "-%s: strdup(%zd) at %p from %s line %d\n",
 	prog, strlen(s)+1, (void *) p, func, line);
   }
 

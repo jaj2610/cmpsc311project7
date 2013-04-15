@@ -21,6 +21,7 @@
 
 #include <limits.h>
 #include <sys/param.h>
+#include <stdbool.h>
 
 
 /* Global Variables */
@@ -32,6 +33,8 @@ extern int v_flag;
 extern int d_flag;
 extern int s_flag;
 extern int exec_flag;	// 0 for vp, 1 for ve, 2 for lp
+
+extern int command_count;
 
 extern pid_t shell_pid;
 extern pid_t fg_pid;
@@ -53,6 +56,22 @@ extern char **environ;
  * Only runs if -v is set at the command line.
  */
 void verbose_greeting(void);
+
+/* Reads the startup file specified by the user
+ * pr7.init is run by default, unless -s is set from the command line.
+ * a "-" argument to -s sets stdin as the stream to read,
+ * otherwise the argument is opened as a normal file.
+ *
+ * If pr7.init is not present, nothing is said.
+ * If the file argument to -s is not present the shell complains and exits.
+ */
+void read_startup_file(bool quiet);
+
+/* prints the prompt to standard output.
+ * if newline != 0, a newline is printed first.
+ */
+void print_prompt(int newline);
+
 
 /* Loop that prints the prompt and processes
  * commands entered by the user, line by line.
@@ -78,11 +97,9 @@ int parse(char *buf, char *Argv[]);
 
 void shell_msg(const char* function_name, const char* msg);
 
-/* THESE STILL NEED A LOT OF WORK */
+/* custom signal handlers for SIGINT and SIGCHLD */
 void handler_SIGCHLD(int signum);
 void handler_SIGINT(int signum);
-void handler_SIGTSTP(int signum);
-
 
 /*----------------------------------------------------------------------------*/
 

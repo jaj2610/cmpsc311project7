@@ -16,6 +16,7 @@
 #include <string.h>
 #include <sys/wait.h>
 #include <signal.h>
+#include <stdbool.h>
 
 #include "pr7.h"
 #include "wrapper.h"
@@ -34,6 +35,8 @@ int d_flag = 0;
 int s_flag = 0;
 int exec_flag = 0;
 
+int command_count = 0;	// number of commands submitted since startup
+
 pid_t shell_pid = 0;
 pid_t fg_pid = 0;
 pid_t fg_pgid = 0;
@@ -50,12 +53,13 @@ int main(int argc, char *argv[])
 
   eval_options(argc, argv);
 
-  // install signal handlers
+  /* install non-default signal handlers for shell */
   Signal(SIGCHLD, handler_SIGCHLD, __func__, __LINE__);
   Signal(SIGINT, handler_SIGINT, __func__, __LINE__);
 
   int status = EXIT_SUCCESS;
 
+  /* Say hello */
   if (v_flag)
   {
     verbose_greeting();
@@ -63,11 +67,10 @@ int main(int argc, char *argv[])
 
   bg_processes = process_list_allocate();
 
-  if (s_flag)
-  {
-    ; // do something with s_filename
-  }
+	read_startup_file((bool) !s_flag);
 
+
+  /* interactivity specified, so start the infinite prompt */
   if (i_flag)
   {
     status = prompt(status);
@@ -109,6 +112,52 @@ void verbose_greeting(void)
 
 /*----------------------------------------------------------------------------*/
 
+void read_startup_file(bool quiet)
+{
+	FILE *fp;
+
+	/* If the user specifies '-', we take our reads from stdin,
+	 * otherwise we attempt to open s_filename for reading
+	 */
+	if (!strcmp(s_filename, "-"))
+	{
+		fp = stdin;
+	}
+	else if ( (fp = fopen(s_filename, "r")) == NULL )
+	{
+			if (!quiet)
+			{
+				fprintf(stderr, "-%s: failed to open startup file %s\n",
+						prog, s_filename);
+			}
+
+			return;
+	}
+
+	char cmdline[MAX_LINE];                /* command line */
+
+	while (fgets(cmdline, MAX_LINE, fp) != NULL)
+	{
+		eval_line(cmdline);
+	}
+
+	return;
+}
+
+/*----------------------------------------------------------------------------*/
+
+void print_prompt(int newline)
+{
+	if (newline)
+	{
+		puts("");
+	}
+
+	printf("%s %d%% ", prog, command_count);
+	command_count++;
+	return;
+}
+
 int prompt(int status)
 {
   char cmdline[MAX_LINE];                /* command line */
@@ -116,8 +165,8 @@ int prompt(int status)
   while (1)
   {
     /* issue prompt and read command line */
-    printf("%s$ ", prog);
-    fgets(cmdline, MAX_LINE, stdin);   /* cmdline includes trailing newline */
+    print_prompt(0);
+	 fgets(cmdline, MAX_LINE, stdin);   /* cmdline includes trailing newline */
     if (feof(stdin))                   /* end of file */
     { 
 		break;
@@ -292,6 +341,7 @@ void shell_msg(const char* function_name, const char* msg)
 
 void handler_SIGCHLD(int signum)
 {
+	(void) signum;
   int status;
 
   /* We received a SIGCHLD signal from a background process,
@@ -305,13 +355,15 @@ void handler_SIGCHLD(int signum)
 	{
       if (pid == fg_pid)
       {
-			//puts("resetting fg's to 0");
         fg_pid = fg_pgid = 0;
       }
       else
       {
-			//puts("popping bg process from list");
         process_list_pop(bg_processes, pid);
+		   
+		  // reprint the prompt
+			print_prompt(0);
+			fflush(stdout);
       }
 	}
 
@@ -322,20 +374,21 @@ void handler_SIGCHLD(int signum)
 
 void handler_SIGINT(int signum)
 {
-  if (fg_pgid != 0)
-  {
-    Kill(-1 * fg_pgid, SIGINT, __func__, __LINE__);
-  }
-}
-
-/*----------------------------------------------------------------------------*/
-
-void handler_SIGTSTP(int signum)
-{
-	//int status;
-	
-
-	// Stop fg process group
+	// if the fg process group exists, forward sigint to 
+	// every process in the group
+	if (fg_pgid != 0)
+	{
+		Kill(-1 * fg_pgid, signum, __func__, __LINE__);
+		puts("");
+	}
+	// if the fg process group does not exist,
+	// simply re-print the prompt
+	else if (getpid() == shell_pid)
+	{
+		printf("\b\b  ");
+		print_prompt(1);
+		fflush(stdout);
+	}
 
 	return;
 }
