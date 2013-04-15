@@ -42,7 +42,14 @@ int new_child(char *Argv[], int background, int status)
 	 */
 	if (pid == 0)
 	{
-		Signal(SIGINT, SIG_DFL, __func__, __LINE__);
+		if (!background)
+		{
+			Signal(SIGINT, SIG_DFL, __func__, __LINE__);
+		}
+		else
+		{
+			Signal(SIGINT, SIG_IGN, __func__, __LINE__);
+		}
 		Signal(SIGCHLD, SIG_DFL, __func__, __LINE__);
 		exec(Argv, status);		// should never return to this point
 	}
