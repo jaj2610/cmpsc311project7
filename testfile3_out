@@ -1,0 +1,42 @@
+bash-3.2$ cat testfile3.txt 
+echo Test case 3:
+toggle e
+toggle v
+toggle d
+toggle i
+toggle
+set echo on
+set echo off
+set verbose on
+set verbose off
+set debug on
+set debug off
+set
+set exec ve
+set exec lp
+set exec vp
+set debug OFF
+bash-3.2$ ./pr7 -V testfile3.txt 
+-pr7: Hello, scott!
+-pr7: Running with:
+   [-v] verbose output
+   [-d] debug output
+-pr7: malloc(24) at 0x7fdd334039d0 from process_list_allocate line 28
+-pr7: set: successfully set echo on
+-pr7: read_input() at line 180 succeeded: Fopen() opened file testfile3.txt
+echo Test case 3: 
+Test case 3: 
+toggle e 
+-pr7: echo mode is now OFF
+-pr7: verbose output is now OFF
+-pr7: debug output is now OFF
+-pr7: error: don't know how to toggle i
+-pr7: try 'toggle [d|e|v]'
+-pr7: error: nothing to toggle
+set echo off 
+-pr7: set: successfully set verbose on
+-pr7: set format:
+-pr7:    set [echo|verbose|debug] [on|off]
+-pr7:    set [exec] [vp|ve|lp]
+-pr7: error: don't know how to set debug "OFF"
+bash-3.2$ 

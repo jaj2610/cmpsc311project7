@@ -1,0 +1,30 @@
+bash-3.2$ cat testfile1.txt 
+echo Test case 1:
+dir
+cdir /nonexistant
+dir
+cdir
+dir
+cdir /
+dir
+pwd
+quit
+bash-3.2$ ./pr7 testfile1.txt 
+echo Test case 1: 
+Test case 1: 
+dir 
+/Users/scott/Documents/classes/current/cmpsc311/project7/cmpsc311project71
+cdir /nonexistant 
+-pr7: cdir: No such file or directory
+dir 
+/Users/scott/Documents/classes/current/cmpsc311/project7/cmpsc311project71
+cdir 
+dir 
+/Users/scott
+cdir / 
+dir 
+/
+pwd 
+/
+quit 
+bash-3.2$ 

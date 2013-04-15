@@ -1,0 +1,59 @@
+bash-3.2$ cat testfile4.txt 
+echo Test case 4:
+sleep 5 &
+sleep 4 &
+sleep 5 &
+sleep 5 &
+sleep 5
+bash-3.2$ ./pr7 -V testfile4.txt 
+-pr7: Hello, scott!
+-pr7: Running with:
+   [-v] verbose output
+   [-d] debug output
+-pr7: malloc(24) at 0x7fcf8b4039d0 from process_list_allocate line 28
+-pr7: set: successfully set echo on
+-pr7: read_input() at line 180 succeeded: Fopen() opened file testfile4.txt
+echo Test case 4: 
+Test case 4: 
+sleep 5 
+-pr7: malloc(32) at 0x7fcf8b4039f0 from process_list_append line 77
+-pr7: strdup(8) at 0x7fcf8b4000e0 from process_list_append line 80
+-pr7: strdup(6) at 0x7fcf8b403a10 from process_list_append line 83
+-pr7: sleep added to background process list.
+sleep 4 
+-pr7: malloc(32) at 0x7fcf8b403a20 from process_list_append line 77
+-pr7: strdup(8) at 0x7fcf8b403a40 from process_list_append line 80
+-pr7: strdup(6) at 0x7fcf8b403a50 from process_list_append line 83
+-pr7: sleep added to background process list.
+sleep 5 
+-pr7: malloc(32) at 0x7fcf8b403a60 from process_list_append line 77
+-pr7: strdup(8) at 0x7fcf8b403a80 from process_list_append line 80
+-pr7: strdup(6) at 0x7fcf8b403a90 from process_list_append line 83
+-pr7: sleep added to background process list.
+sleep 5 
+-pr7: malloc(32) at 0x7fcf8b403aa0 from process_list_append line 77
+-pr7: strdup(8) at 0x7fcf8b403ac0 from process_list_append line 80
+-pr7: strdup(6) at 0x7fcf8b403ad0 from process_list_append line 83
+-pr7: sleep added to background process list.
+sleep 5 
+
+--pr7: sleep (3809) has terminated.
+-pr7: process_list_pop() at line 119: freed memory at 0x7fcf8b403a50
+-pr7: process_list_pop() at line 120: freed memory at 0x7fcf8b403a40
+-pr7: process_list_pop() at line 121: freed memory at 0x7fcf8b403a20
+
+--pr7: sleep (3810) has terminated.
+-pr7: process_list_pop() at line 119: freed memory at 0x7fcf8b403a90
+-pr7: process_list_pop() at line 120: freed memory at 0x7fcf8b403a80
+-pr7: process_list_pop() at line 121: freed memory at 0x7fcf8b403a60
+
+--pr7: sleep (3808) has terminated.
+-pr7: process_list_pop() at line 119: freed memory at 0x7fcf8b403a10
+-pr7: process_list_pop() at line 120: freed memory at 0x7fcf8b4000e0
+-pr7: process_list_pop() at line 121: freed memory at 0x7fcf8b4039f0
+
+--pr7: sleep (3811) has terminated.
+-pr7: process_list_pop() at line 119: freed memory at 0x7fcf8b403ad0
+-pr7: process_list_pop() at line 120: freed memory at 0x7fcf8b403ac0
+-pr7: process_list_pop() at line 121: freed memory at 0x7fcf8b403aa0
+bash-3.2$ 

@@ -1,0 +1,25 @@
+bash-3.2$ ./pr7 -i
+pr7 0% toggle e
+toggle e 
+-pr7: echo mode is now OFF
+pr7 1% pr7 testfile1.txt
+-pr7: failed: No such file or directory
+pr7 2% ./pr7 testfile1.txt
+echo Test case 1: 
+Test case 1: 
+dir 
+/Users/scott/Documents/classes/current/cmpsc311/project7/cmpsc311project71
+cdir /nonexistant 
+-pr7: cdir: No such file or directory
+dir 
+/Users/scott/Documents/classes/current/cmpsc311/project7/cmpsc311project71
+cdir 
+dir 
+/Users/scott
+cdir / 
+dir 
+/
+pwd 
+/
+quit 
+pr7 3% 

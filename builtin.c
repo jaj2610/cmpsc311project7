@@ -46,10 +46,12 @@
 int Builtin(char *Argv[])
 {
 	errno = 0; // reset errno 
-
+/*
 	if (!strcmp(Argv[0], "pr7")) {
 		return 1;
 	}
+	*/
+
 	/* quit command */
 	if (!strcmp(Argv[0], "quit")) { 
 		Quit(); return 1;

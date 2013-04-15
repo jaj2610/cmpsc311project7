@@ -1,0 +1,50 @@
+bash-3.2$ cat testfile2.txt 
+echo Test case 2:
+penv USER
+penv SHELL
+senv programmer1 = Scott
+senv programmer2 = Jake
+penv programmer1
+penv programmer2
+unsenv programmer1
+penv programmer1
+penv
+bash-3.2$ ./pr7 testfile2.txt 
+echo Test case 2: 
+Test case 2: 
+penv USER 
+scott
+penv SHELL 
+/bin/bash
+senv programmer1 = Scott 
+-pr7: senv: format is 'senv name=value'
+senv programmer2 = Jake 
+-pr7: senv: format is 'senv name=value'
+penv programmer1 
+penv programmer2 
+unsenv programmer1 
+-pr7: unsenv: cannot unset programmer1; variable does not exist
+penv programmer1 
+penv 
+TERM_PROGRAM=Apple_Terminal
+TERM_PROGRAM=Apple_Terminal
+TERM=xterm-256color
+SHELL=/bin/bash
+TMPDIR=/var/folders/4x/j4djxgqx3dl2pbpx8xtdyxdh0000gr/T/
+Apple_PubSub_Socket_Render=/tmp/launch-xrwNeP/Render
+TERM_PROGRAM_VERSION=309
+TERM_SESSION_ID=2F712DD7-A2C5-4004-9E9E-AD2D21B15D65
+USER=scott
+COMMAND_MODE=unix2003
+SSH_AUTH_SOCK=/tmp/launch-JAUtD8/Listeners
+__CF_USER_TEXT_ENCODING=0x1F8:0:0
+Apple_Ubiquity_Message=/tmp/launch-38uirK/Apple_Ubiquity_Message
+PATH=/Applications/Mkvtoolnix.app/Contents/MacOS/:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin:/usr/texbin
+PWD=/Users/scott/Documents/classes/current/cmpsc311/project7/cmpsc311project71
+LANG=en_US.UTF-8
+SHLVL=2
+HOME=/Users/scott
+LOGNAME=scott
+DISPLAY=/tmp/launch-nYVxsI/org.macosforge.xquartz:0
+_=./pr7
+bash-3.2$ 

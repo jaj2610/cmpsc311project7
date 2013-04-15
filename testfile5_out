@@ -1,0 +1,31 @@
+bash-3.2$ cat testfile5.txt 
+echo Test case 5:
+whoami
+date
+pwd
+big -a -x 3
+echo foo bar
+cat something
+exit
+bash-3.2$ ./pr7 -v testfile5.txt 
+-pr7: Hello, scott!
+-pr7: Running with:
+   [-v] verbose output
+-pr7: set: successfully set echo on
+echo Test case 5: 
+Test case 5: 
+whoami 
+scott
+date 
+Mon Apr 15 05:13:25 EDT 2013
+pwd 
+/Users/scott/Documents/classes/current/cmpsc311/project7/cmpsc311project71
+big -a -x 3 
+-big: failed: No such file or directory
+echo foo bar 
+foo bar 
+cat something 
+cat: something: No such file or directory
+exit 
+-exit: failed: No such file or directory
+bash-3.2$ 

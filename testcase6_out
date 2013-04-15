@@ -1,0 +1,41 @@
+bash-3.2$ ./pr7 -i -v
+-pr7: Hello, scott!
+-pr7: Running with:
+   [-i] interactive prompt
+   [-v] verbose output
+-pr7: set: successfully set echo on
+pr7 0% toggle e
+toggle e 
+-pr7: echo mode is now OFF
+pr7 1% sleep 50 &
+-pr7: sleep added to background process list.
+pr7 2% pjobs
+Processes:
+   PID       PGID    STATUS     CMD
+   [3846]   [3846]   [RUNNING]   sleep
+pr7 3% kill 1
+-kill: error: can't kill PID 1: Operation not permitted
+pr7 4% kill 3847
+-kill: error: can't kill PID 3847: No such process
+pr7 5% kill 3846
+pr7 6% 
+--pr7: sleep (3846) has terminated.
+pr7 7% pjobs
+pr7 8% jobs
+pr7 9% ps
+  PID TTY           TIME CMD
+  387 ttys000    0:00.03 -sh
+  456 ttys001    0:00.46 -sh
+ 3723 ttys001    0:00.06 bash
+ 3845 ttys001    0:00.00 ./pr7 -i -v
+pr7 10% sleep 10 &
+-pr7: sleep added to background process list.
+pr7 11% sleep 5 &
+-pr7: sleep added to background process list.
+pr7 12% sleep 5
+^C
+
+--pr7: sleep (3856) has terminated.
+pr7 13% 
+--pr7: sleep (3855) has terminated.
+pr7 14% pr7 15% 
