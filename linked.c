@@ -86,7 +86,7 @@ void process_list_append(struct process_list * const list, const char *command, 
   struct node *p = Malloc(sizeof(struct node), __func__, __LINE__);
 
   p->next = NULL;
-  p->status = "RUNNING";
+  p->status = Strdup("RUNNING",  __func__, __LINE__);
   p->pid = pid;
   p->pgid = pgid;
   p->command = Strdup(command,  __func__, __LINE__);
@@ -125,8 +125,8 @@ void process_list_pop(struct process_list * const list, pid_t pid)
       	prog, p->command, (int) p->pid);
       
 		  /* Free allocated resources for node */
-		  Free(prev, __func__, __LINE__);    // Free(NULL) is harmless
       Free(p->command, __func__, __LINE__);
+      Free(p->status, __func__, __LINE__);
 		  Free(p, __func__, __LINE__);
 
       return;
