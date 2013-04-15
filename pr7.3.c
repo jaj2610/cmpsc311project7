@@ -222,7 +222,7 @@ int read_input(int argc, char *argv[])
 
   if (ferror(infile))
   {
-    printf("--%s: error reading input %s\n", prog, strerror(errno));
+    printf("--%s: error reading input: %s\n", prog, strerror(errno));
   }
 
   return status;
