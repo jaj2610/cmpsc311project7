@@ -27,6 +27,8 @@
 /* Global Variables */
 extern char *s_filename;
 extern const char *prog;
+extern char *infile_name;
+
 extern int i_flag;
 extern int e_flag;
 extern int v_flag;
@@ -78,6 +80,8 @@ void print_prompt(int newline);
  * Only runs if -i is set at the command line.
  */
 int prompt(int status);
+
+int read_input(void);
 
 /* Function containing a getopt() loop for
  * processing command line arguments

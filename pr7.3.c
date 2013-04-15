@@ -28,6 +28,8 @@
 
 char *s_filename = "pr7.init";  // default startup file name
 const char *prog = "pr7";
+char *infile_name = "[no name]";
+
 int i_flag = 0;
 int e_flag = 0;
 int v_flag = 0;
@@ -69,12 +71,7 @@ int main(int argc, char *argv[])
 
 	read_startup_file((bool) !s_flag);
 
-
-  /* interactivity specified, so start the infinite prompt */
-  if (i_flag)
-  {
-    status = prompt(status);
-  }
+  status = read_input();
 
   return status;
 }
@@ -166,13 +163,66 @@ int prompt(int status)
   {
     /* issue prompt and read command line */
     print_prompt(0);
-	 fgets(cmdline, MAX_LINE, stdin);   /* cmdline includes trailing newline */
+	  fgets(cmdline, MAX_LINE, stdin);   /* cmdline includes trailing newline */
     if (feof(stdin))                   /* end of file */
     { 
 		break;
     }
 
     status = eval_line(cmdline);
+  }
+
+  return status;
+}
+
+int read_input(void)
+{
+  FILE *infile;
+  char *infile_name; 
+  int status;
+
+  if (i_flag) 
+  { 
+    infile = stdin; infile_name = "[stdin]";
+  }
+  else
+  {
+    infile_name = argv[argc-1];  /* also use strdup()?...no */
+    if ((infile = Fopen(infile_name, "r", __func__, __LINE__)) == NULL)
+    {
+      exit(EXIT_FAILURE);  // brutally fail
+    }
+  }
+
+  char *cmdline[MAX_LINE];
+
+  if (i_flag)
+  {
+    print_prompt(0);
+  }
+
+  while (fgets(cmdline, MAX_LINE, infile) != NULL)
+  {
+
+    /* issue prompt and read command line */
+    /*
+    if (feof(infile))
+    { 
+      break;
+    }
+    */
+
+    status = eval_line(cmdline);
+
+    if (i_flag)
+    {
+      print_prompt(0);
+    }
+  }
+
+  if (ferror(infile))
+  {
+    printf("--%s: error reading input %s\n", prog, strerror(errno));
   }
 
   return status;
