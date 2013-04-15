@@ -1,0 +1,23 @@
+bash-3.2$ make pr7-gcc
+gcc -std=c99 -Wall -Wextra -pedantic -o pr7 pr7.3.c wrapper.c builtin.c linked.c exec.c pr7.h wrapper.h builtin.h linked.h exec.h
+bash-3.2$ cat testfile0.txt 
+echo Test case 0:
+help
+bash-3.2$ cat pr7.init
+set echo on
+bash-3.2$ ./pr7 testfile0.txt 
+echo Test case 0: 
+Test case 0: 
+help 
+built-in commands:
+  help       print this list
+  quit       terminate pr7 if no background processes are running
+  echo       print remaining command-line arguments
+  dir        print current working directory
+  cdir       change working directory
+  penv       print one or all environment variables
+  senv       set an environment variable
+  unsenv     unset an environment variables
+  toggle     toggle a command line argument (e, v, or d)
+  options    prints all active command line arguments (e, i, v, d, and s)
+bash-3.2$ 
