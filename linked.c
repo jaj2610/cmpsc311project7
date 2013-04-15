@@ -52,13 +52,13 @@ void process_list_deallocate(struct process_list * const list)
   struct node *prev = NULL;
   for (struct node *p = list->head; p != NULL; p = p->next)
   {
-      free(prev);	// free(NULL) is harmless
-      free(p->command);
+      Free(prev, __func__, __LINE__);	// Free(NULL) is harmless
+      Free(p->command, __func__, __LINE__);
       prev = p;
   }
-  free(prev);		// now, prev == list->tail
+  Free(prev, __func__, __LINE__);		// now, prev == list->tail
 
-  free(list);
+  Free(list, __func__, __LINE__);
 }
 
 //------------------------------------------------------------------------------
@@ -124,10 +124,10 @@ void process_list_pop(struct process_list * const list, pid_t pid)
       printf("\n--%s: %s (%d) has terminated.\n",
       	prog, p->command, (int) p->pid);
       
-		/* free allocated resources for node */
-		free(prev);    // free(NULL) is harmless
-      free(p->command);
-		free(p);
+		  /* Free allocated resources for node */
+		  Free(prev, __func__, __LINE__);    // Free(NULL) is harmless
+      Free(p->command, __func__, __LINE__);
+		  Free(p, __func__, __LINE__);
 
       return;
     }

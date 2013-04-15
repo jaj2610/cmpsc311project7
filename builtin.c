@@ -181,8 +181,8 @@ void Dir(void)
 		printf("%s\n", getwd(buf));
 	}
 
-	// free() buf and return
-	free(buf);
+	// Free() buf and return
+	Free(buf, __func__, __LINE__);
 	return;
 }
 
@@ -275,7 +275,7 @@ void Senv(char *Argv[])
 
 	
 	// If no '=' is found, the command does not conform to formatting specs,
-	// so issue a message, free buf, and return to prompt
+	// so issue a message, Free buf, and return to prompt
 	char *index_of_equal;
 	if ((index_of_equal = strpbrk(Argv[1], "=")) == NULL)
 	{
@@ -284,7 +284,7 @@ void Senv(char *Argv[])
 	}
 
 	// Allocate space for name
-	// If we fail, free buf and return to prompt
+	// If we fail, Free buf and return to prompt
 	
 	char *name;
 	int namelength = index_of_equal - Argv[1];
@@ -300,14 +300,14 @@ void Senv(char *Argv[])
 
 
 	// Allocate space for value
-	// If we fail, free buf, free name, and return to prompt
+	// If we fail, Free buf, Free name, and return to prompt
 
 	char *value;
 	int valuelength = strlen(Argv[1]) - namelength;
 	if ((value = Malloc(valuelength, __func__, __LINE__)) == NULL)
 	{
 		shell_msg("senv", strerror(errno));
-		free(name);
+		Free(name, __func__, __LINE__);
 		return;
 	}
 
@@ -328,8 +328,8 @@ void Senv(char *Argv[])
 	if ((setenv(name, value, 1) == -1))
 	{
 		shell_msg("senv", strerror(errno));
-		free(name);
-		free(value);
+		Free(name, __func__, __LINE__);
+		Free(value, __func__, __LINE__);
 	}
 
 		if (v_flag)
@@ -340,8 +340,8 @@ void Senv(char *Argv[])
 
 
 	// Free allocations and return to shell
-	free(name);
-	free(value);
+	Free(name, __func__, __LINE__);
+	Free(value, __func__, __LINE__);
 	return;
 }
 
