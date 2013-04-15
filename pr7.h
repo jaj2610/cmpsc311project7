@@ -81,7 +81,6 @@ void print_prompt(int newline);
  * commands entered by the user, line by line.
  * Only runs if -i is set at the command line.
  */
-int prompt(int status);
 
 int read_input(int argc, char *argv[]);
 

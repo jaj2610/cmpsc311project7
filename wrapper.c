@@ -22,13 +22,6 @@
 //------------------------------------------------------------------------------
 
 // utility functions
-//   safe_string(() -- guard against null pointer for character string output
-
-const char *safe_string(const char *str)
-{
-  if (str == NULL) return "(null)";
-  else return str;
-}
 
 //------------------------------------------------------------------------------
 

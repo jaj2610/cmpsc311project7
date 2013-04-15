@@ -17,9 +17,7 @@
 //------------------------------------------------------------------------------
 
 // utility functions
-//   safe_string(() -- guard against null pointer for character string output
 
-const char *safe_string(const char *str);
 typedef void (*sighandler_t)(int);
 
 // Error-checking wrappers for some common functions

@@ -164,28 +164,6 @@ void print_prompt(int newline)
 
 /*----------------------------------------------------------------------------*/
 
-int prompt(int status)
-{
-  char cmdline[MAX_LINE];                /* command line */
-
-  while (1)
-  {
-    /* issue prompt and read command line */
-    print_prompt(0);
-	  fgets(cmdline, MAX_LINE, stdin);   /* cmdline includes trailing newline */
-    if (feof(stdin))                   /* end of file */
-    { 
-		break;
-    }
-
-    status = eval_line(cmdline);
-  }
-
-  return status;
-}
-
-/*----------------------------------------------------------------------------*/
-
 int read_input(int argc, char *argv[])
 {
   FILE *infile;
