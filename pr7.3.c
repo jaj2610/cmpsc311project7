@@ -239,6 +239,8 @@ int read_input(int argc, char *argv[])
     printf("-%s: error reading input: %s\n", prog, strerror(errno));
   }
 
+  Fclose(infile, __func__, __LINE__); 
+
   return status;
 }
 

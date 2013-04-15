@@ -60,6 +60,17 @@ void *Malloc(size_t size, const char *func, const int line)
   return p;
 }
 
+void Free(void *p, const char *func, const int line)
+{
+	free(p);
+
+	if (d_flag)
+	{
+		fprintf("-%s: %s() at line %d: freed memory at %p\n",
+				prog, func, line, p);
+	}
+}
+
 char *Strdup(const char *s, const char *func, const int line)
 {
   char *p = strdup(s);
