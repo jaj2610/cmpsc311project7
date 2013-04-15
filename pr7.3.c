@@ -403,17 +403,17 @@ void handler_SIGCHLD(int signum)
       }
       else
       {
-        process_list_pop(bg_processes, pid);		   
+        process_list_pop(bg_processes, pid);
+		   
+		  // reprint the prompt
+			if (i_flag)
+			{
+				print_prompt(0);
+				fflush(stdout);
+			}
       }
 	}
   
-  	// reprint the prompt
-	if (i_flag)
-	{
-		print_prompt(0);
-		fflush(stdout);
-	}
-
   return;
 }
 
