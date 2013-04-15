@@ -88,7 +88,6 @@ void usage(int status)
 {
   if (status == EXIT_SUCCESS)
   {
-
     printf("usage: %s [-h] [-e] [-v] [-d] [-V] [-s sfile] [command file]\n", prog);
     puts("  -h           print help");
     puts("  -i           interactive mode");
@@ -97,7 +96,7 @@ void usage(int status)
     puts("  -d           debug information for memory allocation");
     puts("  -V           enables verbose and debug modes");
     puts("  -s sfile     use sfile as startup file, default is pr7.init");
-	 puts("\nNOTE: Use -i OR specify a command file for input");
+	  puts("\nNOTE: Use -i OR specify a command file for input");
   }
   else
   {
