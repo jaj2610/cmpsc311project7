@@ -420,14 +420,15 @@ void handler_SIGCHLD(int signum)
       if (pid == fg_pid)
       {
         fg_pid = fg_pgid = 0;
+
+			// reprint the prompt
+			print_prompt(0);
+			fflush(stdout);
+
       }
       else
       {
-        process_list_pop(bg_processes, pid);
-		   
-		  // reprint the prompt
-			print_prompt(0);
-			fflush(stdout);
+        process_list_pop(bg_processes, pid);		   
       }
 	}
 
@@ -447,12 +448,13 @@ void handler_SIGINT(int signum)
 	}
 	// if the fg process group does not exist,
 	// simply re-print the prompt
-	else if (getpid() == shell_pid)
+	else if (fg_pgid == 0 && getpid() == shell_pid)
 	{
 		printf("\b\b  ");
 		print_prompt(1);
 		fflush(stdout);
 	}
+	
 
 	return;
 }

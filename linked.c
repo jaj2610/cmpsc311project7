@@ -123,10 +123,13 @@ void process_list_pop(struct process_list * const list, pid_t pid)
 
       printf("\n--%s: %s (%d) has terminated.\n",
       	prog, p->command, (int) p->pid);
-      free(prev);    // free(NULL) is harmless
+      
+		/* free allocated resources for node */
+		free(prev);    // free(NULL) is harmless
       free(p->command);
+		free(p);
 
-      break;
+      return;
     }
 
 		prev = p;

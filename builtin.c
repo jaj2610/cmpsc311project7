@@ -592,14 +592,18 @@ void Secho(char *Argv[])
 	if (!strcmp(Argv[2], "on")) {
 		e_flag = 1;
 	}
-
-	if (!strcmp(Argv[2], "off")) {
+	else if (!strcmp(Argv[2], "off")) {
 		e_flag = 0;
+	}
+	else {
+		fprintf(stderr, "-%s: error: don't know how to set echo \"%s\"\n", 
+				prog, Argv[2]);
+		return;
 	}
 
 	if (v_flag)
 	{
-		fprintf(stderr, "-%s: set: successfully set to echo mode %s\n",
+		fprintf(stderr, "-%s: set: successfully set echo %s\n",
 				prog, Argv[2]);
 	}
 }
@@ -611,14 +615,18 @@ void Sverbose(char *Argv[])
 	if (!strcmp(Argv[2], "on")) {
 		v_flag = 1;
 	}
-
-	if (!strcmp(Argv[2], "off")) {
+	else if (!strcmp(Argv[2], "off")) {
 		v_flag = 0;
+	}
+	else {
+		fprintf(stderr, "-%s: error: don't know how to set verbose \"%s\"\n", 
+				prog, Argv[2]);
+		return;
 	}
 
 	if (v_flag)
 	{
-		fprintf(stderr, "-%s: set: successfully set to verbose mode %s\n",
+		fprintf(stderr, "-%s: set: successfully set verbose %s\n",
 				prog, Argv[2]);
 	}
 }
@@ -630,14 +638,18 @@ void Sdebug(char *Argv[])
 	if (!strcmp(Argv[2], "on")) {
 		d_flag = 1;
 	}
-
-	if (!strcmp(Argv[2], "off")) {
+	else if (!strcmp(Argv[2], "off")) {
 		d_flag = 0;
+	}
+	else {
+		fprintf(stderr, "-%s: error: don't know how to set debug \"%s\"\n", 
+				prog, Argv[2]);
+		return;
 	}
 
 	if (v_flag)
 	{
-		fprintf(stderr, "-%s: set: successfully set to debug mode %s\n",
+		fprintf(stderr, "-%s: set: successfully set debug %s\n",
 				prog, Argv[2]);
 	}
 }

@@ -50,6 +50,7 @@ int new_child(char *Argv[], int background, int status)
 		{
 			Signal(SIGINT, SIG_IGN, __func__, __LINE__);
 		}
+
 		Signal(SIGCHLD, SIG_DFL, __func__, __LINE__);
 		exec(Argv, status);		// should never return to this point
 	}
