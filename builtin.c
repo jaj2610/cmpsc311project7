@@ -120,7 +120,7 @@ int Builtin(char *Argv[])
 	}
 
 	if (!strcmp(Argv[0], "kill")) {
-		pr7_Kill(); return 1;
+		pr7_Kill(Argv); return 1;
 	}
 
 	/* not a builtin command */
@@ -674,7 +674,7 @@ void Limits(void)
 
 /*----------------------------------------------------------------------------*/
 
-void pr7_Kill(void)
+void pr7_Kill(char *Argv[])
 {
 	if (Argv[1])
 	{

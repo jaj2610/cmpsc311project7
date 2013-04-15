@@ -113,6 +113,6 @@ void Limits(void);
 /* forcibly kill a background process
  * optional extra credit in project 7 specs.
  */
-void pr7_Kill(void);
+void pr7_Kill(char *Argv[]);
 
 #endif /* BUILTIN_H */
