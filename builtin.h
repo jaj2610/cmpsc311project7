@@ -105,4 +105,9 @@ void Sverbose(char *Argv[]);
 /* Secho() toggles debug on or off */
 void Sdebug(char *Argv[]);
 
+/* Prints formatted list of command shell limitations.
+ * First optional extra credit in project 7 specs.
+ */
+void Limits(void);
+
 #endif /* BUILTIN_H */

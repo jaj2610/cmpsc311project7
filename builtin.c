@@ -115,6 +115,10 @@ int Builtin(char *Argv[])
 		return 1;
 	}
 
+	if (!strcmp(Argv[0], "limits")) {
+		Limits(); return 1;
+	}
+
 	/* not a builtin command */
 	return 0;
 }
@@ -652,4 +656,12 @@ void Sdebug(char *Argv[])
 		fprintf(stderr, "-%s: set: successfully set debug %s\n",
 				prog, Argv[2]);
 	}
+}
+
+void Limits(void)
+{
+	puts("Shell Limitations:");
+	printf("   %4d      Maximum input length in characters\n", MAX_INPUT);
+	printf("   %4d      Maximum path length in characters\n", MAX_PATH);
+	printf("   %4d      Maximum number of children forkable from shell process\n", CHILD_MAX);
 }
