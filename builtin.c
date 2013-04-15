@@ -119,6 +119,10 @@ int Builtin(char *Argv[])
 		Limits(); return 1;
 	}
 
+	if (!strcmp(Argv[0], "kill")) {
+		pr7_Kill(); return 1;
+	}
+
 	/* not a builtin command */
 	return 0;
 }
@@ -658,10 +662,31 @@ void Sdebug(char *Argv[])
 	}
 }
 
+/*----------------------------------------------------------------------------*/
+
 void Limits(void)
 {
 	puts("Shell Limitations:");
 	printf("   %4d      Maximum input length in characters\n", MAX_INPUT);
 	printf("   %4d      Maximum path length in characters\n", MAX_PATH);
 	printf("   %4d      Maximum number of children forkable from shell process\n", CHILD_MAX);
+}
+
+/*----------------------------------------------------------------------------*/
+
+void pr7_Kill(void)
+{
+	if (Argv[1])
+	{
+		if (Kill((unsigned int) Argv[1], SIGKILL, __func__, __LINE__) != -1)
+		{
+			process_list_pop(bg_processes, (unsigned int) Argv[1]);
+		}
+		
+	}
+	else
+	{
+		fprintf(stderr, "-%s: to forcibly end a process try 'kill [PID]'\n", prog);
+		fprintf(stderr, "-%s: to see list of currently running background processes, try 'pjobs'\n", prog);
+	}
 }
