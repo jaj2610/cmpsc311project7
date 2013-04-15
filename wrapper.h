@@ -29,7 +29,7 @@ void *Malloc(size_t size,
 	const char *func, const int line);
 
 void Free(void *p,
-	const char *func, const int line)
+	const char *func, const int line);
 
 char *Strdup(const char *s,
 	const char *func, const int line);

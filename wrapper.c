@@ -66,7 +66,7 @@ void Free(void *p, const char *func, const int line)
 
 	if (d_flag)
 	{
-		fprintf("-%s: %s() at line %d: freed memory at %p\n",
+		fprintf(stderr, "-%s: %s() at line %d: freed memory at %p\n",
 				prog, func, line, p);
 	}
 }

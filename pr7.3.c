@@ -422,16 +422,18 @@ void handler_SIGCHLD(int signum)
       if (pid == fg_pid)
       {
         fg_pid = fg_pgid = 0;
-
-			// reprint the prompt
-			print_prompt(0);
-			fflush(stdout);
-
       }
       else
       {
         process_list_pop(bg_processes, pid);		   
       }
+	}
+  
+  	// reprint the prompt
+	if (i_flag)
+	{
+		print_prompt(0);
+		fflush(stdout);
 	}
 
   return;
